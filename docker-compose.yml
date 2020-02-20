@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  hubble-shuttle-3.5:
+    container_name: ${PROJECT_NAME?'Please set the ’PROJECT_NAME’ env var before runing docker-compose'}
+    build:
+      context: .
+      dockerfile: Dockerfile-3.5
+    volumes:
+      - .:/src
+  hubble-shuttle-3.6:
+    container_name: ${PROJECT_NAME?'Please set the ’PROJECT_NAME’ env var before runing docker-compose'}
+    build:
+      context: .
+      dockerfile: Dockerfile-3.6
+    volumes:
+      - .:/src
+  hubble-shuttle-3.7:
+    container_name: ${PROJECT_NAME?'Please set the ’PROJECT_NAME’ env var before runing docker-compose'}
+    build:
+      context: .
+      dockerfile: Dockerfile-3.7
+    volumes:
+      - .:/src
