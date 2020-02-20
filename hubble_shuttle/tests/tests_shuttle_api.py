@@ -48,12 +48,12 @@ class ShuttleAPITest(TestCase):
         mock_requests.assert_called_with("http://myapi/path", headers={"foo": "bar", "bar": "baz"})
 
     @patch("requests.get")
-    def test_get_request_with_class_and_request_query_param_conflict(self, mock_requests):
+    def test_get_request_with_class_and_request_headers_conflict(self, mock_requests):
         client = ShuttleAPITestClient()
-        client.query = {"foo": "bar"}
-        client.http_get("/path", query={"foo": "baz"})
+        client.headers = {"foo": "bar"}
+        client.http_get("/path", headers={"foo": "baz"})
 
-        mock_requests.assert_called_with("http://myapi/path", params={"foo": "baz"})
+        mock_requests.assert_called_with("http://myapi/path", headers={"foo": "baz"})
 
     @patch("requests.get")
     def test_get_request_with_request_query_param(self, mock_requests):
