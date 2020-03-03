@@ -126,3 +126,98 @@ class ShuttleAPITest(TestCase):
             ShuttleAPITestClient().http_get("/status/599")
         self.assertEqual(599, cm.exception.internal_status_code, "Returns the error status code")
 
+    def test_post_request(self):
+        response = ShuttleAPITestClient().http_post("/post")
+        self.assertEqual('http://test_http_server/post', response.data['url'], "Parses the JSON response")
+        self.assertEqual({}, response.data['args'], "Doesn't include any query params")
+
+    def test_post_request_no_body(self):
+        response = ShuttleAPITestClient().http_post("/post")
+        self.assertEqual("", response.data['data'], "Doesn't send any content body")
+        self.assertEqual({}, response.data['form'], "Doesn't send any form data")
+
+    def test_post_request_status_code(self):
+        response = ShuttleAPITestClient().http_post("/status/200")
+        self.assertEqual(200, response.status_code, "Returns the HTTP status code")
+        response = ShuttleAPITestClient().http_post("/status/201")
+        self.assertEqual(201, response.status_code, "Returns the HTTP status code")
+
+    def test_post_request_with_class_headers(self):
+        client = ShuttleAPITestClient()
+        client.headers = {"Foo": "Bar"}
+        response = client.http_post("/post")
+        self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the client-level headers")
+
+    def test_post_request_with_request_headers(self):
+        client = ShuttleAPITestClient()
+        response = client.http_post("/post", headers={"Foo": "Bar"})
+        self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the request-level headers")
+
+    def test_post_request_with_class_and_request_headers(self):
+        client = ShuttleAPITestClient()
+        client.headers = {"Foo": "Bar"}
+        response = client.http_post("/post", headers={"Bar": "Baz"})
+        self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the client-level headers")
+        self.assertEqual("Baz", response.data['headers']['Bar'], "Sends the request-level headers")
+
+    def test_post_request_with_class_and_request_headers_conflict(self):
+        client = ShuttleAPITestClient()
+        client.headers = {"Foo": "Bar"}
+        response = client.http_post("/post", headers={"Foo": "Baz"})
+        self.assertEqual("Baz", response.data['headers']['Foo'], "Sends the request-level headers")
+
+    def test_post_request_with_class_query_param(self):
+        client = ShuttleAPITestClient()
+        client.query = {"foo": "bar"}
+        response = client.http_post("/post")
+        self.assertEqual("bar", response.data['args']['foo'], "Sends the client-level parameters")
+
+    def test_post_request_with_request_query_param(self):
+        client = ShuttleAPITestClient()
+        response = client.http_post("/post", query={"foo": "bar"})
+        self.assertEqual("bar", response.data['args']['foo'], "Sends the request-level parameters")
+
+    def test_post_request_with_class_and_request_query_param(self):
+        client = ShuttleAPITestClient()
+        client.query = {"foo": "bar"}
+        response = client.http_post("/post", query={"bar": "baz"})
+        self.assertEqual("bar", response.data['args']['foo'], "Sends the client-level parameters")
+        self.assertEqual("baz", response.data['args']['bar'], "Sends the request-level parameters")
+
+    def test_post_request_with_class_and_request_query_param_conflict(self):
+        client = ShuttleAPITestClient()
+        client.query = {"foo": "bar"}
+        response = client.http_post("/post", query={"foo": "baz"})
+        self.assertEqual("baz", response.data['args']['foo'], "Sends the request-level parameters")
+
+    def test_post_generic_networking_error(self):
+        client = ShuttleAPITestClient()
+        client.api_endpoint = 'http://non_existing_http_server'
+        with self.assertRaises(hubble_shuttle.exceptions.APIError) as cm:
+            client.http_post("/post")
+
+    def test_post_400_http_error(self):
+        with self.assertRaises(hubble_shuttle.exceptions.BadRequestError) as cm:
+            ShuttleAPITestClient().http_post("/status/400")
+        self.assertEqual(400, cm.exception.internal_status_code, "Returns the error status code")
+
+    def test_post_404_http_error(self):
+        with self.assertRaises(hubble_shuttle.exceptions.NotFoundError) as cm:
+            ShuttleAPITestClient().http_post("/status/404")
+        self.assertEqual(404, cm.exception.internal_status_code, "Returns the error status code")
+
+    def test_post_499_http_error(self):
+        with self.assertRaises(hubble_shuttle.exceptions.HTTPClientError) as cm:
+            ShuttleAPITestClient().http_post("/status/499")
+        self.assertEqual(499, cm.exception.internal_status_code, "Returns the error status code")
+
+    def test_post_500_http_error(self):
+        with self.assertRaises(hubble_shuttle.exceptions.InternalServerError) as cm:
+            ShuttleAPITestClient().http_post("/status/500")
+        self.assertEqual(500, cm.exception.internal_status_code, "Returns the error status code")
+
+    def test_post_599_http_error(self):
+        with self.assertRaises(hubble_shuttle.exceptions.HTTPServerError) as cm:
+            ShuttleAPITestClient().http_post("/status/599")
+        self.assertEqual(599, cm.exception.internal_status_code, "Returns the error status code")
+

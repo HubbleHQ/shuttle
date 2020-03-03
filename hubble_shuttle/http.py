@@ -13,24 +13,9 @@ class ShuttleAPI:
 
     def http_get(self, url, **kwargs):
         try:
-            request_url = urljoin(
-                self.api_endpoint,
-                url,
-            )
-
-            request_args = {}
-
-            request_headers = self.prepare_request_headers(kwargs.get("headers", {}))
-            if request_headers:
-                request_args.update({"headers": request_headers})
-
-            request_query = self.prepare_request_query(kwargs.get("query", {}))
-            if request_query:
-                request_args.update({"params": request_query})
-
             response = requests.get(
-                request_url,
-                **request_args,
+                self.prepare_request_url(url),
+                **self.prepare_request_args(**kwargs),
             )
 
             self.raise_for_status(url, response)
@@ -38,6 +23,38 @@ class ShuttleAPI:
             return self.parse_response(response)
         except RequestException as error:
             raise APIError(type(self).__name__, url, error)
+
+    def http_post(self, url, **kwargs):
+        try:
+            response = requests.post(
+                self.prepare_request_url(url),
+                **self.prepare_request_args(**kwargs),
+            )
+
+            self.raise_for_status(url, response)
+
+            return self.parse_response(response)
+        except RequestException as error:
+            raise APIError(type(self).__name__, url, error)
+
+    def prepare_request_url(self, url):
+        return urljoin(
+            self.api_endpoint,
+            url
+        )
+
+    def prepare_request_args(self, **kwargs):
+        request_args = {}
+
+        request_headers = self.prepare_request_headers(kwargs.get("headers", {}))
+        if request_headers:
+            request_args.update({"headers": request_headers})
+
+        request_query = self.prepare_request_query(kwargs.get("query", {}))
+        if request_query:
+            request_args.update({"params": request_query})
+
+        return request_args
 
     def prepare_request_headers(self, headers):
         request_headers = {}
