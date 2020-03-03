@@ -43,6 +43,10 @@ class ShuttleAPITest(TestCase):
         response = ShuttleAPITestClient().http_get("/base64/SGVsbG8=")
         self.assertEqual(b"Hello", response.data, "Returns the response as a binary string")
 
+    def test_get_gzip_content_encoding(self):
+        response = ShuttleAPITestClient().http_get("/gzip")
+        self.assertEqual(response.data['gzipped'], True, "Decodes the gzipped response content")
+
     def test_get_request_with_class_headers(self):
         client = ShuttleAPITestClient()
         client.headers = {"Foo": "Bar"}
