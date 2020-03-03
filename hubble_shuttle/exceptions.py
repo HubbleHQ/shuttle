@@ -11,7 +11,8 @@ class HTTPError(APIError):
     def __init__(self, service_name, source, original_error):
         super().__init__(service_name, source, original_error)
         self.internal_status_code = original_error.response.status_code
-        self.response = original_error.response.json()
+        # TODO: parse content dynamically
+        self.response = original_error.response.text
 
 # For 4xx class errors
 class HTTPClientError(HTTPError):

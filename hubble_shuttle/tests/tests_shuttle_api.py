@@ -8,143 +8,87 @@ from hubble_shuttle import ShuttleAPI
 
 
 class ShuttleAPITestClient(ShuttleAPI):
-    api_endpoint = "http://myapi/"
+    api_endpoint = "http://test_http_server/"
 
 
 class ShuttleAPITest(TestCase):
 
-    @patch("requests.get")
-    def test_get_request(self, mock_requests):
-        response = MagicMock()
-        response.json.return_value = {"returned": "data"}
-        mock_requests.return_value = response
+    def test_get_request(self):
+        response = ShuttleAPITestClient().http_get("/get")
+        self.assertEqual('http://test_http_server/get', response.data['url'], "Parses the JSON response")
+        self.assertEqual({}, response.data['args'], "Doesn't include any query params")
 
-        response = ShuttleAPITestClient().http_get("/path")
-
-        mock_requests.assert_called_with("http://myapi/path")
-        self.assertEqual({"returned": "data"}, response.data, "Returns the parsed JSON data")
-
-    @patch("requests.get")
-    def test_get_request_with_class_headers(self, mock_requests):
+    def test_get_request_with_class_headers(self):
         client = ShuttleAPITestClient()
-        client.headers = {"foo": "bar"}
-        client.http_get("/path")
+        client.headers = {"Foo": "Bar"}
+        response = client.http_get("/get")
+        self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the client-level headers")
 
-        mock_requests.assert_called_with("http://myapi/path", headers={"foo": "bar"})
-
-    @patch("requests.get")
-    def test_get_request_with_request_headers(self, mock_requests):
+    def test_get_request_with_request_headers(self):
         client = ShuttleAPITestClient()
-        client.http_get("/path", headers={"foo": "bar"})
+        response = client.http_get("/get", headers={"Foo": "Bar"})
+        self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the request-level headers")
 
-        mock_requests.assert_called_with("http://myapi/path", headers={"foo": "bar"})
-
-    @patch("requests.get")
-    def test_get_request_with_class_and_request_headers(self, mock_requests):
+    def test_get_request_with_class_and_request_headers(self):
         client = ShuttleAPITestClient()
-        client.headers = {"foo": "bar"}
-        client.http_get("/path", headers={"bar": "baz"})
+        client.headers = {"Foo": "Bar"}
+        response = client.http_get("/get", headers={"Bar": "Baz"})
+        self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the client-level headers")
+        self.assertEqual("Baz", response.data['headers']['Bar'], "Sends the request-level headers")
 
-        mock_requests.assert_called_with("http://myapi/path", headers={"foo": "bar", "bar": "baz"})
-
-    @patch("requests.get")
-    def test_get_request_with_class_and_request_headers_conflict(self, mock_requests):
+    def test_get_request_with_class_and_request_headers_conflict(self):
         client = ShuttleAPITestClient()
-        client.headers = {"foo": "bar"}
-        client.http_get("/path", headers={"foo": "baz"})
+        client.headers = {"Foo": "Bar"}
+        response = client.http_get("/get", headers={"Foo": "Baz"})
+        self.assertEqual("Baz", response.data['headers']['Foo'], "Sends the request-level headers")
 
-        mock_requests.assert_called_with("http://myapi/path", headers={"foo": "baz"})
-
-    @patch("requests.get")
-    def test_get_request_with_request_query_param(self, mock_requests):
-        client = ShuttleAPITestClient()
-        client.http_get("/path", query={"foo": "bar"})
-
-        mock_requests.assert_called_with("http://myapi/path", params={"foo": "bar"})
-
-    @patch("requests.get")
-    def test_get_request_with_class_and_request_query_param(self, mock_requests):
+    def test_get_request_with_class_query_param(self):
         client = ShuttleAPITestClient()
         client.query = {"foo": "bar"}
-        client.http_get("/path", query={"bar": "baz"})
+        response = client.http_get("/get")
+        self.assertEqual("bar", response.data['args']['foo'], "Sends the client-level parameters")
 
-        mock_requests.assert_called_with("http://myapi/path", params={"foo": "bar", "bar": "baz"})
+    def test_get_request_with_request_query_param(self):
+        client = ShuttleAPITestClient()
+        response = client.http_get("/get", query={"foo": "bar"})
+        self.assertEqual("bar", response.data['args']['foo'], "Sends the request-level parameters")
 
-    @patch("requests.get")
-    def test_get_request_with_class_and_request_query_param_conflict(self, mock_requests):
+    def test_get_request_with_class_and_request_query_param(self):
         client = ShuttleAPITestClient()
         client.query = {"foo": "bar"}
-        client.http_get("/path", query={"foo": "baz"})
+        response = client.http_get("/get", query={"bar": "baz"})
+        self.assertEqual("bar", response.data['args']['foo'], "Sends the client-level parameters")
+        self.assertEqual("baz", response.data['args']['bar'], "Sends the request-level parameters")
 
-        mock_requests.assert_called_with("http://myapi/path", params={"foo": "baz"})
+    def test_get_request_with_class_and_request_query_param_conflict(self):
+        client = ShuttleAPITestClient()
+        client.query = {"foo": "bar"}
+        response = client.http_get("/get", query={"foo": "baz"})
+        self.assertEqual("baz", response.data['args']['foo'], "Sends the request-level parameters")
 
-    @patch("requests.get")
-    def test_get_generic_networking_error(self, mock_requests):
-        response = MagicMock()
-        response_error = requests.exceptions.RequestException
-        response.raise_for_status.side_effect = response_error
-
-        mock_requests.return_value = response
+    def test_get_generic_networking_error(self):
+        client = ShuttleAPITestClient()
+        client.api_endpoint = 'http://non_existing_http_server'
         with self.assertRaises(hubble_shuttle.exceptions.APIError) as cm:
-            ShuttleAPITestClient().http_get("/path")
+            client.http_get("/get")
 
-    @patch("requests.get")
-    def test_get_400_http_error(self, mock_requests):
-        response = MagicMock()
-        response.status_code = 400
-        response.data = {"some_key": "some_value"}
-        response_error = requests.exceptions.HTTPError(response=response)
-        response.raise_for_status.side_effect = response_error
-
-        mock_requests.return_value = response
+    def test_get_400_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.BadRequestError) as cm:
-            ShuttleAPITestClient().http_get("/path")
+            ShuttleAPITestClient().http_get("/status/400")
 
-    @patch("requests.get")
-    def test_get_404_http_error(self, mock_requests):
-        response = MagicMock()
-        response.status_code = 404
-        response.data = {"some_key": "some_value"}
-        response_error = requests.exceptions.HTTPError(response=response)
-        response.raise_for_status.side_effect = response_error
-
-        mock_requests.return_value = response
+    def test_get_404_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.NotFoundError) as cm:
-            ShuttleAPITestClient().http_get("/path")
+            ShuttleAPITestClient().http_get("/status/404")
 
-    @patch("requests.get")
-    def test_get_499_http_error(self, mock_requests):
-        response = MagicMock()
-        response.status_code = 499
-        response.data = {"some_key": "some_value"}
-        response_error = requests.exceptions.HTTPError(response=response)
-        response.raise_for_status.side_effect = response_error
-
-        mock_requests.return_value = response
+    def test_get_499_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.HTTPClientError) as cm:
-            ShuttleAPITestClient().http_get("/path")
+            ShuttleAPITestClient().http_get("/status/499")
 
-    @patch("requests.get")
-    def test_get_500_http_error(self, mock_requests):
-        response = MagicMock()
-        response.status_code = 500
-        response.data = {"some_key": "some_value"}
-        response_error = requests.exceptions.HTTPError(response=response)
-        response.raise_for_status.side_effect = response_error
-
-        mock_requests.return_value = response
+    def test_get_500_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.InternalServerError) as cm:
-            ShuttleAPITestClient().http_get("/path")
+            ShuttleAPITestClient().http_get("/status/500")
 
-    @patch("requests.get")
-    def test_get_599_http_error(self, mock_requests):
-        response = MagicMock()
-        response.status_code = 599
-        response.data = {"some_key": "some_value"}
-        response_error = requests.exceptions.HTTPError(response=response)
-        response.raise_for_status.side_effect = response_error
-
-        mock_requests.return_value = response
+    def test_get_599_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.HTTPServerError) as cm:
-            ShuttleAPITestClient().http_get("/path")
+            ShuttleAPITestClient().http_get("/status/599")
 
