@@ -18,11 +18,11 @@ class ShuttleAPITest(TestCase):
         self.assertEqual('http://test_http_server/get', response.data['url'], "Parses the JSON response")
         self.assertEqual({}, response.data['args'], "Doesn't include any query params")
 
-    def test_parse_response_text(self):
+    def test_get_request_parse_response_text(self):
         response = ShuttleAPITestClient().http_get("/robots.txt")
         self.assertEqual("User-agent: *\nDisallow: /deny\n", response.data, "Returns the text response as a string")
 
-    def test_parse_response_json(self):
+    def test_get_request_parse_response_json(self):
         response = ShuttleAPITestClient().http_get("/json")
         self.assertEqual({'slideshow': {'author': 'Yours Truly',
                 'date': 'date of publication',
@@ -33,7 +33,7 @@ class ShuttleAPITest(TestCase):
                             'type': 'all'}],
                 'title': 'Sample Slide Show'}}, response.data, "Returns the JSON response as parsed object")
 
-    def test_parse_response_default(self):
+    def test_get_request_parse_response_default(self):
         response = ShuttleAPITestClient().http_get("/base64/SGVsbG8=")
         self.assertEqual(b"Hello", response.data, "Returns the response as a binary string")
 
