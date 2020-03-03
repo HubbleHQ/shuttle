@@ -146,3 +146,20 @@ For non-HTTP error (networking, DNS resolution errors, ...), Shuttle will return
 
 All errors are in the `hubble_shuttle.exceptions` module.
 
+## Contributing
+
+Pull requests in Github are accepted and the best way to contribute to Shuttle.
+
+### Testing
+
+We require pull requests to have comprehensive tests coverage, and for all the tests to be passing.
+
+Tests are run against all the supported Python versions, using Docker. You can run the test suite using Docker:
+```
+# Builds and sets up the Docker containers
+make dev-build
+
+# Runs the test suite inside Docker
+make dev-test
+```
+
