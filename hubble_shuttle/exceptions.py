@@ -8,11 +8,10 @@ class APIError(IOError):
 
 class HTTPError(APIError):
 
-    def __init__(self, service_name, source, original_error):
+    def __init__(self, service_name, source, original_error, response):
         super().__init__(service_name, source, original_error)
-        self.internal_status_code = original_error.response.status_code
-        # TODO: parse content dynamically
-        self.response = original_error.response.text
+        self.internal_status_code = response.status_code
+        self.response = response.data
 
 # For 4xx class errors
 class HTTPClientError(HTTPError):

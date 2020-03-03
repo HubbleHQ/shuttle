@@ -18,6 +18,12 @@ class ShuttleAPITest(TestCase):
         self.assertEqual('http://test_http_server/get', response.data['url'], "Parses the JSON response")
         self.assertEqual({}, response.data['args'], "Doesn't include any query params")
 
+    def test_get_request_status_code(self):
+        response = ShuttleAPITestClient().http_get("/status/200")
+        self.assertEqual(200, response.status_code, "Returns the HTTP status code")
+        response = ShuttleAPITestClient().http_get("/status/201")
+        self.assertEqual(201, response.status_code, "Returns the HTTP status code")
+
     def test_get_request_parse_response_text(self):
         response = ShuttleAPITestClient().http_get("/robots.txt")
         self.assertEqual("User-agent: *\nDisallow: /deny\n", response.data, "Returns the text response as a string")
@@ -94,20 +100,25 @@ class ShuttleAPITest(TestCase):
     def test_get_400_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.BadRequestError) as cm:
             ShuttleAPITestClient().http_get("/status/400")
+        self.assertEqual(400, cm.exception.internal_status_code, "Returns the error status code")
 
     def test_get_404_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.NotFoundError) as cm:
             ShuttleAPITestClient().http_get("/status/404")
+        self.assertEqual(404, cm.exception.internal_status_code, "Returns the error status code")
 
     def test_get_499_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.HTTPClientError) as cm:
             ShuttleAPITestClient().http_get("/status/499")
+        self.assertEqual(499, cm.exception.internal_status_code, "Returns the error status code")
 
     def test_get_500_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.InternalServerError) as cm:
             ShuttleAPITestClient().http_get("/status/500")
+        self.assertEqual(500, cm.exception.internal_status_code, "Returns the error status code")
 
     def test_get_599_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.HTTPServerError) as cm:
             ShuttleAPITestClient().http_get("/status/599")
+        self.assertEqual(599, cm.exception.internal_status_code, "Returns the error status code")
 

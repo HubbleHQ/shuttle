@@ -60,7 +60,7 @@ class ShuttleAPI:
             response.raise_for_status()
         except RequestsHTTPError as error:
             error_class = self.map_http_error_class(error)
-            raise error_class(type(self).__name__, url, error)
+            raise error_class(type(self).__name__, url, error, self.parse_response(response))
 
     def map_http_error_class(self, error):
         if error.response.status_code in HTTP_STATUS_CODE_ERRORS:
@@ -81,10 +81,11 @@ class ShuttleAPI:
         else:
             data = response.content
 
-        return ShuttleResponse(data)
+        return ShuttleResponse(data, response.status_code)
 
 class ShuttleResponse:
 
-    def __init__(self, data):
+    def __init__(self, data, status_code):
         self.data = data
+        self.status_code = status_code
 
