@@ -1,3 +1,4 @@
+import re
 import requests
 from requests.exceptions import RequestException
 from requests.exceptions import HTTPError as RequestsHTTPError
@@ -72,8 +73,13 @@ class ShuttleAPI:
         return HTTPError
 
     def parse_response(self, response):
-        # TODO: We shouldn't assume JSON and sniff the content type
-        data = response.json()
+        content_type = response.headers.get('Content-Type', '')
+        if re.match(r"^application/json( ?;.+)?$", content_type):
+            data = response.json()
+        elif re.match(r"^text/plain( ?;.+)?$", content_type):
+            data = response.text
+        else:
+            data = response.content
 
         return ShuttleResponse(data)
 
