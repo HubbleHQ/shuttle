@@ -33,6 +33,10 @@ on content encoding, and handles HTTP and networking errors.
 pip install hubble_shuttle
 ```
 
+### Supported Python versions
+
+Shuttle is build and tested with Python 3.5, 3.6, and 3.7.
+
 ## Client-level configuration
 
 Creating an API client only requires you to extend the `ShuttleAPI` class, and provide some configuration
