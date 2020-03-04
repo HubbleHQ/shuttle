@@ -62,7 +62,7 @@ class ShuttleAPI:
             elif content_type == "application/json":
                 request_args.update({"json": kwargs["data"]})
             else:
-                raise ValueError("Unknown content type for request: {content_type}." % { "content_type": content_type })
+                raise ValueError("Unknown content type for request: {}".format(content_type))
 
         return request_args
 

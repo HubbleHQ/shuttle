@@ -154,6 +154,7 @@ class ShuttleAPITest(TestCase):
     def test_post_request_with_data_unknown_content_type(self):
         with self.assertRaises(ValueError) as cm:
             ShuttleAPITestClient().http_post("/post", content_type="application/bad-content-type", data={"foo": "bar", "bar": "baz"})
+        self.assertEqual(str(cm.exception), "Unknown content type for request: application/bad-content-type", "Indicates the invalid content type")
 
     def test_post_request_with_data_client_request_content_type(self):
         client = ShuttleAPITestClient()
