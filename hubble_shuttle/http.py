@@ -55,7 +55,13 @@ class ShuttleAPI:
             request_args.update({"params": request_query})
 
         if "data" in kwargs:
-            request_args.update({"data": kwargs["data"]})
+            content_type = kwargs.get("content_type", "application/x-www-form-urlencoded")
+            if content_type == "application/x-www-form-urlencoded":
+                request_args.update({"data": kwargs["data"]})
+            elif content_type == "application/json":
+                request_args.update({"json": kwargs["data"]})
+            else:
+                raise ValueError("Unknown content type for request: {content_type}." % { "content_type": content_type })
 
         return request_args
 
