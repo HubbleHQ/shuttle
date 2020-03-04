@@ -1,5 +1,5 @@
 export PROJECT_NAME := hubble-shuttle
-export PYTHON_VERSIONS := 3.5 3.6 3.7
+export PYTHON_VERSIONS := 3.5 3.6 3.7 3.8
 
 .PHONY: dev-build
 dev-build: ## Create the docker image for you dev environment.

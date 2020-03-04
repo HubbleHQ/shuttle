@@ -28,5 +28,14 @@ services:
       - .:/src
     depends_on:
       - test_http_server
+  hubble-shuttle-3.8:
+    container_name: ${PROJECT_NAME?'Please set the ’PROJECT_NAME’ env var before runing docker-compose'}
+    build:
+      context: .
+      dockerfile: Dockerfile-3.8
+    volumes:
+      - .:/src
+    depends_on:
+      - test_http_server
   test_http_server:
     image: kennethreitz/httpbin
