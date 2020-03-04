@@ -54,6 +54,9 @@ class ShuttleAPI:
         if request_query:
             request_args.update({"params": request_query})
 
+        if "data" in kwargs:
+            request_args.update({"data": kwargs["data"]})
+
         return request_args
 
     def prepare_request_headers(self, headers):

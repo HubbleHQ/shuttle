@@ -136,6 +136,11 @@ class ShuttleAPITest(TestCase):
         self.assertEqual("", response.data['data'], "Doesn't send any content body")
         self.assertEqual({}, response.data['form'], "Doesn't send any form data")
 
+    def test_post_request_with_data(self):
+        response = ShuttleAPITestClient().http_post("/post", data={"foo": "bar", "bar": "baz"})
+        self.assertEqual({"foo": "bar", "bar": "baz"}, response.data['form'], "Sends the data in form format")
+        self.assertEqual("application/x-www-form-urlencoded", response.data['headers']['Content-Type'], "Sets the appropriate content type header")
+
     def test_post_request_status_code(self):
         response = ShuttleAPITestClient().http_post("/status/200")
         self.assertEqual(200, response.status_code, "Returns the HTTP status code")
