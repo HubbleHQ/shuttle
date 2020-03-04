@@ -122,6 +122,20 @@ Shuttle supports the following content types for sending a request body:
 
 Specifying an unknown content type will result in a `ValueError` being raised.
 
+If the API you are contacting always expects the request body to be another content type than the
+default `application/x-www-form-urlencoded`, it is possible to change it for a whole client too:
+
+```python
+class UserAPI(ShuttleAPI):
+
+    request_content_type = "application/json"
+
+    def create_user(self):
+        # Sends a POST request to `/users` with body `{"username":"foo","email":"foo@example.com"}`
+        self.http_post("/users", data={"username": "foo", "email": "foo@example.com"})
+```
+
+
 ### Response format
 
 The response object contains information returned by the HTTP backend. You can access:
