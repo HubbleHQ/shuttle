@@ -97,7 +97,7 @@ class ShuttleAPITest(TestCase):
 
     def test_get_generic_networking_error(self):
         client = ShuttleAPITestClient()
-        client.api_endpoint = 'http://non_existing_http_server'
+        client.api_endpoint = 'http://test_http_server:1234'
         with self.assertRaises(hubble_shuttle.exceptions.APIError) as cm:
             client.http_get("/get")
 
@@ -192,7 +192,7 @@ class ShuttleAPITest(TestCase):
 
     def test_post_generic_networking_error(self):
         client = ShuttleAPITestClient()
-        client.api_endpoint = 'http://non_existing_http_server'
+        client.api_endpoint = 'http://test_http_server:1234'
         with self.assertRaises(hubble_shuttle.exceptions.APIError) as cm:
             client.http_post("/post")
 
