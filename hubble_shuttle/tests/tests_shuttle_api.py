@@ -148,12 +148,19 @@ class ShuttleAPITest(TestCase):
 
     def test_post_request_with_data_json(self):
         response = ShuttleAPITestClient().http_post("/post", content_type="application/json", data={"foo": "bar", "bar": "baz"})
-        self.assertEqual({"foo": "bar", "bar": "baz"}, response.data['json'], "Sends the data in form format")
+        self.assertEqual({"foo": "bar", "bar": "baz"}, response.data['json'], "Sends the data in JSON format")
         self.assertEqual("application/json", response.data['headers']['Content-Type'], "Sets the appropriate content type header")
 
     def test_post_request_with_data_unknown_content_type(self):
         with self.assertRaises(ValueError) as cm:
             ShuttleAPITestClient().http_post("/post", content_type="application/bad-content-type", data={"foo": "bar", "bar": "baz"})
+
+    def test_post_request_with_data_client_request_content_type(self):
+        client = ShuttleAPITestClient()
+        client.request_content_type = "application/json"
+        response = client.http_post("/post", data={"foo": "bar", "bar": "baz"})
+        self.assertEqual({"foo": "bar", "bar": "baz"}, response.data['json'], "Sends the data in JSON format")
+        self.assertEqual("application/json", response.data['headers']['Content-Type'], "Sets the appropriate content type header")
 
     def test_post_request_status_code(self):
         response = ShuttleAPITestClient().http_post("/status/200")

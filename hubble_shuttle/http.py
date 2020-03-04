@@ -10,6 +10,7 @@ class ShuttleAPI:
 
     headers = {}
     query = {}
+    request_content_type = "application/x-www-form-urlencoded"
 
     def http_get(self, url, **kwargs):
         try:
@@ -55,7 +56,7 @@ class ShuttleAPI:
             request_args.update({"params": request_query})
 
         if "data" in kwargs:
-            content_type = kwargs.get("content_type", "application/x-www-form-urlencoded")
+            content_type = kwargs.get("content_type", self.request_content_type)
             if content_type == "application/x-www-form-urlencoded":
                 request_args.update({"data": kwargs["data"]})
             elif content_type == "application/json":
