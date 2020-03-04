@@ -48,8 +48,7 @@ class ShuttleAPITest(TestCase):
         self.assertEqual(response.data['gzipped'], True, "Decodes the gzipped response content")
 
     def test_get_request_with_class_headers(self):
-        client = ShuttleAPITestClient()
-        client.headers = {"Foo": "Bar"}
+        client = ShuttleAPITestClient(headers={"Foo": "Bar"})
         response = client.http_get("/get")
         self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the client-level headers")
 
@@ -59,21 +58,18 @@ class ShuttleAPITest(TestCase):
         self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the request-level headers")
 
     def test_get_request_with_class_and_request_headers(self):
-        client = ShuttleAPITestClient()
-        client.headers = {"Foo": "Bar"}
+        client = ShuttleAPITestClient(headers={"Foo": "Bar"})
         response = client.http_get("/get", headers={"Bar": "Baz"})
         self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the client-level headers")
         self.assertEqual("Baz", response.data['headers']['Bar'], "Sends the request-level headers")
 
     def test_get_request_with_class_and_request_headers_conflict(self):
-        client = ShuttleAPITestClient()
-        client.headers = {"Foo": "Bar"}
+        client = ShuttleAPITestClient(headers={"Foo": "Bar"})
         response = client.http_get("/get", headers={"Foo": "Baz"})
         self.assertEqual("Baz", response.data['headers']['Foo'], "Sends the request-level headers")
 
     def test_get_request_with_class_query_param(self):
-        client = ShuttleAPITestClient()
-        client.query = {"foo": "bar"}
+        client = ShuttleAPITestClient(query={"foo": "bar"})
         response = client.http_get("/get")
         self.assertEqual("bar", response.data['args']['foo'], "Sends the client-level parameters")
 
@@ -83,21 +79,18 @@ class ShuttleAPITest(TestCase):
         self.assertEqual("bar", response.data['args']['foo'], "Sends the request-level parameters")
 
     def test_get_request_with_class_and_request_query_param(self):
-        client = ShuttleAPITestClient()
-        client.query = {"foo": "bar"}
+        client = ShuttleAPITestClient(query={"foo": "bar"})
         response = client.http_get("/get", query={"bar": "baz"})
         self.assertEqual("bar", response.data['args']['foo'], "Sends the client-level parameters")
         self.assertEqual("baz", response.data['args']['bar'], "Sends the request-level parameters")
 
     def test_get_request_with_class_and_request_query_param_conflict(self):
-        client = ShuttleAPITestClient()
-        client.query = {"foo": "bar"}
+        client = ShuttleAPITestClient(query={"foo": "bar"})
         response = client.http_get("/get", query={"foo": "baz"})
         self.assertEqual("baz", response.data['args']['foo'], "Sends the request-level parameters")
 
     def test_get_generic_networking_error(self):
-        client = ShuttleAPITestClient()
-        client.api_endpoint = 'http://test_http_server:1234'
+        client = ShuttleAPITestClient(api_endpoint='http://test_http_server:1234')
         with self.assertRaises(hubble_shuttle.exceptions.APIError) as cm:
             client.http_get("/get")
 
@@ -157,8 +150,7 @@ class ShuttleAPITest(TestCase):
         self.assertEqual(str(cm.exception), "Unknown content type for request: application/bad-content-type", "Indicates the invalid content type")
 
     def test_post_request_with_data_client_request_content_type(self):
-        client = ShuttleAPITestClient()
-        client.request_content_type = "application/json"
+        client = ShuttleAPITestClient(request_content_type="application/json")
         response = client.http_post("/post", data={"foo": "bar", "bar": "baz"})
         self.assertEqual({"foo": "bar", "bar": "baz"}, response.data['json'], "Sends the data in JSON format")
         self.assertEqual("application/json", response.data['headers']['Content-Type'], "Sets the appropriate content type header")
@@ -170,8 +162,7 @@ class ShuttleAPITest(TestCase):
         self.assertEqual(201, response.status_code, "Returns the HTTP status code")
 
     def test_post_request_with_class_headers(self):
-        client = ShuttleAPITestClient()
-        client.headers = {"Foo": "Bar"}
+        client = ShuttleAPITestClient(headers={"Foo": "Bar"})
         response = client.http_post("/post")
         self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the client-level headers")
 
@@ -181,21 +172,18 @@ class ShuttleAPITest(TestCase):
         self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the request-level headers")
 
     def test_post_request_with_class_and_request_headers(self):
-        client = ShuttleAPITestClient()
-        client.headers = {"Foo": "Bar"}
+        client = ShuttleAPITestClient(headers={"Foo": "Bar"})
         response = client.http_post("/post", headers={"Bar": "Baz"})
         self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the client-level headers")
         self.assertEqual("Baz", response.data['headers']['Bar'], "Sends the request-level headers")
 
     def test_post_request_with_class_and_request_headers_conflict(self):
-        client = ShuttleAPITestClient()
-        client.headers = {"Foo": "Bar"}
+        client = ShuttleAPITestClient(headers={"Foo": "Bar"})
         response = client.http_post("/post", headers={"Foo": "Baz"})
         self.assertEqual("Baz", response.data['headers']['Foo'], "Sends the request-level headers")
 
     def test_post_request_with_class_query_param(self):
-        client = ShuttleAPITestClient()
-        client.query = {"foo": "bar"}
+        client = ShuttleAPITestClient(query={"foo": "bar"})
         response = client.http_post("/post")
         self.assertEqual("bar", response.data['args']['foo'], "Sends the client-level parameters")
 
@@ -205,21 +193,18 @@ class ShuttleAPITest(TestCase):
         self.assertEqual("bar", response.data['args']['foo'], "Sends the request-level parameters")
 
     def test_post_request_with_class_and_request_query_param(self):
-        client = ShuttleAPITestClient()
-        client.query = {"foo": "bar"}
+        client = ShuttleAPITestClient(query={"foo": "bar"})
         response = client.http_post("/post", query={"bar": "baz"})
         self.assertEqual("bar", response.data['args']['foo'], "Sends the client-level parameters")
         self.assertEqual("baz", response.data['args']['bar'], "Sends the request-level parameters")
 
     def test_post_request_with_class_and_request_query_param_conflict(self):
-        client = ShuttleAPITestClient()
-        client.query = {"foo": "bar"}
+        client = ShuttleAPITestClient(query={"foo": "bar"})
         response = client.http_post("/post", query={"foo": "baz"})
         self.assertEqual("baz", response.data['args']['foo'], "Sends the request-level parameters")
 
     def test_post_generic_networking_error(self):
-        client = ShuttleAPITestClient()
-        client.api_endpoint = 'http://test_http_server:1234'
+        client = ShuttleAPITestClient(api_endpoint='http://test_http_server:1234')
         with self.assertRaises(hubble_shuttle.exceptions.APIError) as cm:
             client.http_post("/post")
 
