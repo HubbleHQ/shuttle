@@ -108,6 +108,20 @@ def create_user(self):
     self.http_post("/users", data={"username": "foo", "email": "foo@example.com"})
 ```
 
+You can also send the body in another format if you prefer:
+
+```python
+def create_user(self):
+    # Sends a POST request to `/users` with body `{"username":"foo","email":"foo@example.com"}`
+    self.http_post("/users", content_type="application/json", data={"username": "foo", "email": "foo@example.com"})
+```
+
+Shuttle supports the following content types for sending a request body:
+* `application/x-www-form-urlencoded` (default)
+* `application/json`
+
+Specifying an unknown content type will result in a `ValueError` being raised.
+
 ### Response format
 
 The response object contains information returned by the HTTP backend. You can access:
