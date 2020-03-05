@@ -1,4 +1,3 @@
-export PROJECT_NAME := hubble-shuttle
 export PYTHON_VERSIONS := 3.5 3.6 3.7 3.8
 
 .PHONY: dev-build
@@ -12,7 +11,7 @@ dev-clean: ## Remove all the docker containers for this project.
 .PHONY: dev-test
 dev-test: ## Run the tests.
 	for PYTHON_VERSION in ${PYTHON_VERSIONS} ; do \
-		docker-compose run --rm "${PROJECT_NAME}-$$PYTHON_VERSION" python -m unittest discover ; \
+		docker-compose run --rm "hubble-shuttle-$$PYTHON_VERSION" python -m unittest discover ; \
 	done
 
 .PHONY: help
