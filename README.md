@@ -65,8 +65,6 @@ class MyClientAPI(ShuttleAPI):
 The `ShuttleAPI` class provides methods to allow you to make HTTP requests against you API, in
 the form of `http_X` instance methods, where `X` is the HTTP verb you'd like to use.
 
-> Note: At the time of writing, Shuttle only supports GET and POST requests.
-
 A simple GET request can be made like so:
 
 ```python
@@ -94,9 +92,6 @@ class ConflictingHeaderAPI(ShuttleAPI):
 ```
 
 ### Sending a request body
-
-> Note: PUT and PATCH requests aren't supported yet.
-> This paragraph document the behaviour we are expecting of Shuttle in the future.
 
 When making a POST, PUT, or PATCH request, it is possible to embed a request body. The request
 body will be automatically encoded based on request content type, if it is set. If the content
