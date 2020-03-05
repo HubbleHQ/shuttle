@@ -1,5 +1,7 @@
 # Hubble Shuttle 🚀
 
+![CircleCI build status](https://circleci.com/gh/HubbleHQ/shuttle.svg?style=svg&circle-token=db1939f52993f462688a0a10ffa554b41ef1211b)
+
 Hubble Shuttle is an abstraction layer that makes it easy to write REST API clients.
 
 It enbraces convention over configuration, and abstracts a lot of common patterns to simplify
