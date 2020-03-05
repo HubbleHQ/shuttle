@@ -233,3 +233,85 @@ class ShuttleAPITest(TestCase):
             ShuttleAPITestClient().http_post("/status/599")
         self.assertEqual(599, cm.exception.internal_status_code, "Returns the error status code")
 
+    def test_delete_request(self):
+        response = ShuttleAPITestClient().http_delete("/delete")
+        self.assertEqual('http://test_http_server/delete', response.data['url'], "Parses the JSON response")
+        self.assertEqual({}, response.data['args'], "Doesn't include any query params")
+
+    def test_delete_request_status_code(self):
+        response = ShuttleAPITestClient().http_delete("/status/200")
+        self.assertEqual(200, response.status_code, "Returns the HTTP status code")
+        response = ShuttleAPITestClient().http_delete("/status/201")
+        self.assertEqual(201, response.status_code, "Returns the HTTP status code")
+
+    def test_delete_request_with_class_headers(self):
+        client = ShuttleAPITestClient(headers={"Foo": "Bar"})
+        response = client.http_delete("/delete")
+        self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the client-level headers")
+
+    def test_delete_request_with_request_headers(self):
+        client = ShuttleAPITestClient()
+        response = client.http_delete("/delete", headers={"Foo": "Bar"})
+        self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the request-level headers")
+
+    def test_delete_request_with_class_and_request_headers(self):
+        client = ShuttleAPITestClient(headers={"Foo": "Bar"})
+        response = client.http_delete("/delete", headers={"Bar": "Baz"})
+        self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the client-level headers")
+        self.assertEqual("Baz", response.data['headers']['Bar'], "Sends the request-level headers")
+
+    def test_delete_request_with_class_and_request_headers_conflict(self):
+        client = ShuttleAPITestClient(headers={"Foo": "Bar"})
+        response = client.http_delete("/delete", headers={"Foo": "Baz"})
+        self.assertEqual("Baz", response.data['headers']['Foo'], "Sends the request-level headers")
+
+    def test_delete_request_with_class_query_param(self):
+        client = ShuttleAPITestClient(query={"foo": "bar"})
+        response = client.http_delete("/delete")
+        self.assertEqual("bar", response.data['args']['foo'], "Sends the client-level parameters")
+
+    def test_delete_request_with_request_query_param(self):
+        client = ShuttleAPITestClient()
+        response = client.http_delete("/delete", query={"foo": "bar"})
+        self.assertEqual("bar", response.data['args']['foo'], "Sends the request-level parameters")
+
+    def test_delete_request_with_class_and_request_query_param(self):
+        client = ShuttleAPITestClient(query={"foo": "bar"})
+        response = client.http_delete("/delete", query={"bar": "baz"})
+        self.assertEqual("bar", response.data['args']['foo'], "Sends the client-level parameters")
+        self.assertEqual("baz", response.data['args']['bar'], "Sends the request-level parameters")
+
+    def test_delete_request_with_class_and_request_query_param_conflict(self):
+        client = ShuttleAPITestClient(query={"foo": "bar"})
+        response = client.http_delete("/delete", query={"foo": "baz"})
+        self.assertEqual("baz", response.data['args']['foo'], "Sends the request-level parameters")
+
+    def test_delete_generic_networking_error(self):
+        client = ShuttleAPITestClient(api_endpoint='http://test_http_server:1234')
+        with self.assertRaises(hubble_shuttle.exceptions.APIError) as cm:
+            client.http_delete("/delete")
+
+    def test_delete_400_http_error(self):
+        with self.assertRaises(hubble_shuttle.exceptions.BadRequestError) as cm:
+            ShuttleAPITestClient().http_delete("/status/400")
+        self.assertEqual(400, cm.exception.internal_status_code, "Returns the error status code")
+
+    def test_delete_404_http_error(self):
+        with self.assertRaises(hubble_shuttle.exceptions.NotFoundError) as cm:
+            ShuttleAPITestClient().http_delete("/status/404")
+        self.assertEqual(404, cm.exception.internal_status_code, "Returns the error status code")
+
+    def test_delete_499_http_error(self):
+        with self.assertRaises(hubble_shuttle.exceptions.HTTPClientError) as cm:
+            ShuttleAPITestClient().http_delete("/status/499")
+        self.assertEqual(499, cm.exception.internal_status_code, "Returns the error status code")
+
+    def test_delete_500_http_error(self):
+        with self.assertRaises(hubble_shuttle.exceptions.InternalServerError) as cm:
+            ShuttleAPITestClient().http_delete("/status/500")
+        self.assertEqual(500, cm.exception.internal_status_code, "Returns the error status code")
+
+    def test_delete_599_http_error(self):
+        with self.assertRaises(hubble_shuttle.exceptions.HTTPServerError) as cm:
+            ShuttleAPITestClient().http_delete("/status/599")
+        self.assertEqual(599, cm.exception.internal_status_code, "Returns the error status code")

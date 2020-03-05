@@ -20,6 +20,9 @@ class RequestsShuttleTransport:
     def post(self, url, **kwargs):
         return self.__http_request("post", url, **kwargs)
 
+    def delete(self, url, **kwargs):
+        return self.__http_request("delete", url, **kwargs)
+
     def __http_request(self, method, url, **kwargs):
         try:
             response = requests.request(
