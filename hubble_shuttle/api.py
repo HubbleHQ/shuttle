@@ -36,6 +36,9 @@ class ShuttleAPI:
     def http_put(self, url, **kwargs):
         return self.http.put(url, **kwargs)
 
+    def http_patch(self, url, **kwargs):
+        return self.http.patch(url, **kwargs)
+
     def http_delete(self, url, **kwargs):
         return self.http.delete(url, **kwargs)
 

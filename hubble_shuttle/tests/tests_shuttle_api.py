@@ -347,6 +347,120 @@ class ShuttleAPITest(TestCase):
             ShuttleAPITestClient().http_put("/status/599")
         self.assertEqual(599, cm.exception.internal_status_code, "Returns the error status code")
 
+    def test_patch_request(self):
+        response = ShuttleAPITestClient().http_patch("/patch")
+        self.assertEqual('http://test_http_server/patch', response.data['url'], "Parses the JSON response")
+        self.assertEqual({}, response.data['args'], "Doesn't include any query params")
+
+    def test_patch_request_no_body(self):
+        response = ShuttleAPITestClient().http_patch("/patch")
+        self.assertEqual("", response.data['data'], "Doesn't send any content body")
+        self.assertEqual({}, response.data['form'], "Doesn't send any form data")
+
+    def test_patch_request_with_data(self):
+        response = ShuttleAPITestClient().http_patch("/patch", data={"foo": "bar", "bar": "baz"})
+        self.assertEqual({"foo": "bar", "bar": "baz"}, response.data['form'], "Sends the data in form format")
+        self.assertEqual("application/x-www-form-urlencoded", response.data['headers']['Content-Type'], "Sets the appropriate content type header")
+
+    def test_patch_request_with_data_form_urlencoded(self):
+        response = ShuttleAPITestClient().http_patch("/patch", content_type="application/x-www-form-urlencoded", data={"foo": "bar", "bar": "baz"})
+        self.assertEqual({"foo": "bar", "bar": "baz"}, response.data['form'], "Sends the data in form format")
+        self.assertEqual("application/x-www-form-urlencoded", response.data['headers']['Content-Type'], "Sets the appropriate content type header")
+
+    def test_patch_request_with_data_json(self):
+        response = ShuttleAPITestClient().http_patch("/patch", content_type="application/json", data={"foo": "bar", "bar": "baz"})
+        self.assertEqual({"foo": "bar", "bar": "baz"}, response.data['json'], "Sends the data in JSON format")
+        self.assertEqual("application/json", response.data['headers']['Content-Type'], "Sets the appropriate content type header")
+
+    def test_patch_request_with_data_unknown_content_type(self):
+        with self.assertRaises(ValueError) as cm:
+            ShuttleAPITestClient().http_patch("/patch", content_type="application/bad-content-type", data={"foo": "bar", "bar": "baz"})
+        self.assertEqual(str(cm.exception), "Unknown content type for request: application/bad-content-type", "Indicates the invalid content type")
+
+    def test_patch_request_with_data_client_request_content_type(self):
+        client = ShuttleAPITestClient(request_content_type="application/json")
+        response = client.http_patch("/patch", data={"foo": "bar", "bar": "baz"})
+        self.assertEqual({"foo": "bar", "bar": "baz"}, response.data['json'], "Sends the data in JSON format")
+        self.assertEqual("application/json", response.data['headers']['Content-Type'], "Sets the appropriate content type header")
+
+    def test_patch_request_status_code(self):
+        response = ShuttleAPITestClient().http_patch("/status/200")
+        self.assertEqual(200, response.status_code, "Returns the HTTP status code")
+        response = ShuttleAPITestClient().http_patch("/status/201")
+        self.assertEqual(201, response.status_code, "Returns the HTTP status code")
+
+    def test_patch_request_with_class_headers(self):
+        client = ShuttleAPITestClient(headers={"Foo": "Bar"})
+        response = client.http_patch("/patch")
+        self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the client-level headers")
+
+    def test_patch_request_with_request_headers(self):
+        client = ShuttleAPITestClient()
+        response = client.http_patch("/patch", headers={"Foo": "Bar"})
+        self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the request-level headers")
+
+    def test_patch_request_with_class_and_request_headers(self):
+        client = ShuttleAPITestClient(headers={"Foo": "Bar"})
+        response = client.http_patch("/patch", headers={"Bar": "Baz"})
+        self.assertEqual("Bar", response.data['headers']['Foo'], "Sends the client-level headers")
+        self.assertEqual("Baz", response.data['headers']['Bar'], "Sends the request-level headers")
+
+    def test_patch_request_with_class_and_request_headers_conflict(self):
+        client = ShuttleAPITestClient(headers={"Foo": "Bar"})
+        response = client.http_patch("/patch", headers={"Foo": "Baz"})
+        self.assertEqual("Baz", response.data['headers']['Foo'], "Sends the request-level headers")
+
+    def test_patch_request_with_class_query_param(self):
+        client = ShuttleAPITestClient(query={"foo": "bar"})
+        response = client.http_patch("/patch")
+        self.assertEqual("bar", response.data['args']['foo'], "Sends the client-level parameters")
+
+    def test_patch_request_with_request_query_param(self):
+        client = ShuttleAPITestClient()
+        response = client.http_patch("/patch", query={"foo": "bar"})
+        self.assertEqual("bar", response.data['args']['foo'], "Sends the request-level parameters")
+
+    def test_patch_request_with_class_and_request_query_param(self):
+        client = ShuttleAPITestClient(query={"foo": "bar"})
+        response = client.http_patch("/patch", query={"bar": "baz"})
+        self.assertEqual("bar", response.data['args']['foo'], "Sends the client-level parameters")
+        self.assertEqual("baz", response.data['args']['bar'], "Sends the request-level parameters")
+
+    def test_patch_request_with_class_and_request_query_param_conflict(self):
+        client = ShuttleAPITestClient(query={"foo": "bar"})
+        response = client.http_patch("/patch", query={"foo": "baz"})
+        self.assertEqual("baz", response.data['args']['foo'], "Sends the request-level parameters")
+
+    def test_patch_generic_networking_error(self):
+        client = ShuttleAPITestClient(api_endpoint='http://test_http_server:1234')
+        with self.assertRaises(hubble_shuttle.exceptions.APIError) as cm:
+            client.http_patch("/patch")
+
+    def test_patch_400_http_error(self):
+        with self.assertRaises(hubble_shuttle.exceptions.BadRequestError) as cm:
+            ShuttleAPITestClient().http_patch("/status/400")
+        self.assertEqual(400, cm.exception.internal_status_code, "Returns the error status code")
+
+    def test_patch_404_http_error(self):
+        with self.assertRaises(hubble_shuttle.exceptions.NotFoundError) as cm:
+            ShuttleAPITestClient().http_patch("/status/404")
+        self.assertEqual(404, cm.exception.internal_status_code, "Returns the error status code")
+
+    def test_patch_499_http_error(self):
+        with self.assertRaises(hubble_shuttle.exceptions.HTTPClientError) as cm:
+            ShuttleAPITestClient().http_patch("/status/499")
+        self.assertEqual(499, cm.exception.internal_status_code, "Returns the error status code")
+
+    def test_patch_500_http_error(self):
+        with self.assertRaises(hubble_shuttle.exceptions.InternalServerError) as cm:
+            ShuttleAPITestClient().http_patch("/status/500")
+        self.assertEqual(500, cm.exception.internal_status_code, "Returns the error status code")
+
+    def test_patch_599_http_error(self):
+        with self.assertRaises(hubble_shuttle.exceptions.HTTPServerError) as cm:
+            ShuttleAPITestClient().http_patch("/status/599")
+        self.assertEqual(599, cm.exception.internal_status_code, "Returns the error status code")
+
     def test_delete_request(self):
         response = ShuttleAPITestClient().http_delete("/delete")
         self.assertEqual('http://test_http_server/delete', response.data['url'], "Parses the JSON response")

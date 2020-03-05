@@ -23,6 +23,9 @@ class RequestsShuttleTransport:
     def put(self, url, **kwargs):
         return self.__http_request("put", url, **kwargs)
 
+    def patch(self, url, **kwargs):
+        return self.__http_request("patch", url, **kwargs)
+
     def delete(self, url, **kwargs):
         return self.__http_request("delete", url, **kwargs)
 
