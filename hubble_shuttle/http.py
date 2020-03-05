@@ -6,26 +6,18 @@ from urllib.parse import urljoin
 
 from .exceptions import *
 
-class ShuttleAPI:
-
-    headers = {}
-    query = {}
-    request_content_type = "application/x-www-form-urlencoded"
+class RequestsShuttleTransport:
 
     def __init__(self, **kwargs):
-        if "api_endpoint" in kwargs:
-            self.api_endpoint = kwargs["api_endpoint"]
-        if "headers" in kwargs:
-            self.headers = kwargs["headers"]
-        if "query" in kwargs:
-            self.query = kwargs["query"]
-        if "request_content_type" in kwargs:
-            self.request_content_type = kwargs["request_content_type"]
+        self.api_endpoint = kwargs["api_endpoint"]
+        self.headers = kwargs["headers"]
+        self.query = kwargs["query"]
+        self.request_content_type = kwargs["request_content_type"]
 
-    def http_get(self, url, **kwargs):
+    def get(self, url, **kwargs):
         return self.__http_request("get", url, **kwargs)
 
-    def http_post(self, url, **kwargs):
+    def post(self, url, **kwargs):
         return self.__http_request("post", url, **kwargs)
 
     def __http_request(self, method, url, **kwargs):

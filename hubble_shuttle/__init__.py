@@ -1,3 +1,3 @@
 
-from .http import ShuttleAPI
+from .api import ShuttleAPI
 
