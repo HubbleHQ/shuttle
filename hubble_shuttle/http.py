@@ -23,45 +23,39 @@ class ShuttleAPI:
             self.request_content_type = kwargs["request_content_type"]
 
     def http_get(self, url, **kwargs):
-        try:
-            response = requests.get(
-                self.prepare_request_url(url),
-                **self.prepare_request_args(**kwargs),
-            )
-
-            self.raise_for_status(url, response)
-
-            return self.parse_response(response)
-        except RequestException as error:
-            raise APIError(type(self).__name__, url, error)
+        return self.__http_request("get", url, **kwargs)
 
     def http_post(self, url, **kwargs):
+        return self.__http_request("post", url, **kwargs)
+
+    def __http_request(self, method, url, **kwargs):
         try:
-            response = requests.post(
-                self.prepare_request_url(url),
-                **self.prepare_request_args(**kwargs),
+            response = requests.request(
+                method,
+                self.__prepare_request_url(url),
+                **self.__prepare_request_args(**kwargs),
             )
 
-            self.raise_for_status(url, response)
+            self.__raise_for_status(url, response)
 
-            return self.parse_response(response)
+            return self.__parse_response(response)
         except RequestException as error:
             raise APIError(type(self).__name__, url, error)
 
-    def prepare_request_url(self, url):
+    def __prepare_request_url(self, url):
         return urljoin(
             self.api_endpoint,
             url
         )
 
-    def prepare_request_args(self, **kwargs):
+    def __prepare_request_args(self, **kwargs):
         request_args = {}
 
-        request_headers = self.prepare_request_headers(kwargs.get("headers", {}))
+        request_headers = self.__prepare_request_headers(kwargs.get("headers", {}))
         if request_headers:
             request_args.update({"headers": request_headers})
 
-        request_query = self.prepare_request_query(kwargs.get("query", {}))
+        request_query = self.__prepare_request_query(kwargs.get("query", {}))
         if request_query:
             request_args.update({"params": request_query})
 
@@ -76,7 +70,7 @@ class ShuttleAPI:
 
         return request_args
 
-    def prepare_request_headers(self, headers):
+    def __prepare_request_headers(self, headers):
         request_headers = {}
         if self.headers:
             request_headers.update(self.headers)
@@ -84,7 +78,7 @@ class ShuttleAPI:
             request_headers.update(headers)
         return request_headers
 
-    def prepare_request_query(self, query):
+    def __prepare_request_query(self, query):
         request_query = {}
         if self.query:
             request_query.update(self.query)
@@ -92,14 +86,14 @@ class ShuttleAPI:
             request_query.update(query)
         return request_query
 
-    def raise_for_status(self, url, response):
+    def __raise_for_status(self, url, response):
         try:
             response.raise_for_status()
         except RequestsHTTPError as error:
-            error_class = self.map_http_error_class(error)
-            raise error_class(type(self).__name__, url, error, self.parse_response(response))
+            error_class = self.__map_http_error_class(error)
+            raise error_class(type(self).__name__, url, error, self.__parse_response(response))
 
-    def map_http_error_class(self, error):
+    def __map_http_error_class(self, error):
         if error.response.status_code in HTTP_STATUS_CODE_ERRORS:
             return HTTP_STATUS_CODE_ERRORS[error.response.status_code]
 
@@ -109,7 +103,7 @@ class ShuttleAPI:
 
         return HTTPError
 
-    def parse_response(self, response):
+    def __parse_response(self, response):
         content_type = response.headers.get('Content-Type', '')
         if re.match(r"^application/json( ?;.+)?$", content_type):
             data = response.json()
