@@ -20,6 +20,9 @@ class RequestsShuttleTransport:
     def post(self, url, **kwargs):
         return self.__http_request("post", url, **kwargs)
 
+    def put(self, url, **kwargs):
+        return self.__http_request("put", url, **kwargs)
+
     def delete(self, url, **kwargs):
         return self.__http_request("delete", url, **kwargs)
 
