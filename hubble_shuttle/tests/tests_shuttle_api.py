@@ -93,31 +93,43 @@ class ShuttleAPITest(TestCase):
         client = ShuttleAPITestClient(api_endpoint='http://test_http_server:1234')
         with self.assertRaises(hubble_shuttle.exceptions.APIError) as cm:
             client.http_get("/get")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/get", cm.exception.source, "Sets the error source")
 
     def test_get_400_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.BadRequestError) as cm:
             ShuttleAPITestClient().http_get("/status/400")
         self.assertEqual(400, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/400", cm.exception.source, "Sets the error source")
 
     def test_get_404_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.NotFoundError) as cm:
             ShuttleAPITestClient().http_get("/status/404")
         self.assertEqual(404, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/404", cm.exception.source, "Sets the error source")
 
     def test_get_499_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.HTTPClientError) as cm:
             ShuttleAPITestClient().http_get("/status/499")
         self.assertEqual(499, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/499", cm.exception.source, "Sets the error source")
 
     def test_get_500_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.InternalServerError) as cm:
             ShuttleAPITestClient().http_get("/status/500")
         self.assertEqual(500, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/500", cm.exception.source, "Sets the error source")
 
     def test_get_599_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.HTTPServerError) as cm:
             ShuttleAPITestClient().http_get("/status/599")
         self.assertEqual(599, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/599", cm.exception.source, "Sets the error source")
 
     def test_post_request(self):
         response = ShuttleAPITestClient().http_post("/post")
@@ -207,31 +219,43 @@ class ShuttleAPITest(TestCase):
         client = ShuttleAPITestClient(api_endpoint='http://test_http_server:1234')
         with self.assertRaises(hubble_shuttle.exceptions.APIError) as cm:
             client.http_post("/post")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/post", cm.exception.source, "Sets the error source")
 
     def test_post_400_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.BadRequestError) as cm:
             ShuttleAPITestClient().http_post("/status/400")
         self.assertEqual(400, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/400", cm.exception.source, "Sets the error source")
 
     def test_post_404_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.NotFoundError) as cm:
             ShuttleAPITestClient().http_post("/status/404")
         self.assertEqual(404, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/404", cm.exception.source, "Sets the error source")
 
     def test_post_499_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.HTTPClientError) as cm:
             ShuttleAPITestClient().http_post("/status/499")
         self.assertEqual(499, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/499", cm.exception.source, "Sets the error source")
 
     def test_post_500_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.InternalServerError) as cm:
             ShuttleAPITestClient().http_post("/status/500")
         self.assertEqual(500, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/500", cm.exception.source, "Sets the error source")
 
     def test_post_599_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.HTTPServerError) as cm:
             ShuttleAPITestClient().http_post("/status/599")
         self.assertEqual(599, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/599", cm.exception.source, "Sets the error source")
 
     def test_put_request(self):
         response = ShuttleAPITestClient().http_put("/put")
@@ -321,31 +345,43 @@ class ShuttleAPITest(TestCase):
         client = ShuttleAPITestClient(api_endpoint='http://test_http_server:1234')
         with self.assertRaises(hubble_shuttle.exceptions.APIError) as cm:
             client.http_put("/put")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/put", cm.exception.source, "Sets the error source")
 
     def test_put_400_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.BadRequestError) as cm:
             ShuttleAPITestClient().http_put("/status/400")
         self.assertEqual(400, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/400", cm.exception.source, "Sets the error source")
 
     def test_put_404_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.NotFoundError) as cm:
             ShuttleAPITestClient().http_put("/status/404")
         self.assertEqual(404, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/404", cm.exception.source, "Sets the error source")
 
     def test_put_499_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.HTTPClientError) as cm:
             ShuttleAPITestClient().http_put("/status/499")
         self.assertEqual(499, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/499", cm.exception.source, "Sets the error source")
 
     def test_put_500_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.InternalServerError) as cm:
             ShuttleAPITestClient().http_put("/status/500")
         self.assertEqual(500, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/500", cm.exception.source, "Sets the error source")
 
     def test_put_599_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.HTTPServerError) as cm:
             ShuttleAPITestClient().http_put("/status/599")
         self.assertEqual(599, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/599", cm.exception.source, "Sets the error source")
 
     def test_patch_request(self):
         response = ShuttleAPITestClient().http_patch("/patch")
@@ -435,31 +471,43 @@ class ShuttleAPITest(TestCase):
         client = ShuttleAPITestClient(api_endpoint='http://test_http_server:1234')
         with self.assertRaises(hubble_shuttle.exceptions.APIError) as cm:
             client.http_patch("/patch")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/patch", cm.exception.source, "Sets the error source")
 
     def test_patch_400_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.BadRequestError) as cm:
             ShuttleAPITestClient().http_patch("/status/400")
         self.assertEqual(400, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/400", cm.exception.source, "Sets the error source")
 
     def test_patch_404_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.NotFoundError) as cm:
             ShuttleAPITestClient().http_patch("/status/404")
         self.assertEqual(404, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/404", cm.exception.source, "Sets the error source")
 
     def test_patch_499_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.HTTPClientError) as cm:
             ShuttleAPITestClient().http_patch("/status/499")
         self.assertEqual(499, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/499", cm.exception.source, "Sets the error source")
 
     def test_patch_500_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.InternalServerError) as cm:
             ShuttleAPITestClient().http_patch("/status/500")
         self.assertEqual(500, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/500", cm.exception.source, "Sets the error source")
 
     def test_patch_599_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.HTTPServerError) as cm:
             ShuttleAPITestClient().http_patch("/status/599")
         self.assertEqual(599, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/599", cm.exception.source, "Sets the error source")
 
     def test_delete_request(self):
         response = ShuttleAPITestClient().http_delete("/delete")
@@ -518,28 +566,40 @@ class ShuttleAPITest(TestCase):
         client = ShuttleAPITestClient(api_endpoint='http://test_http_server:1234')
         with self.assertRaises(hubble_shuttle.exceptions.APIError) as cm:
             client.http_delete("/delete")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/delete", cm.exception.source, "Sets the error source")
 
     def test_delete_400_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.BadRequestError) as cm:
             ShuttleAPITestClient().http_delete("/status/400")
         self.assertEqual(400, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/400", cm.exception.source, "Sets the error source")
 
     def test_delete_404_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.NotFoundError) as cm:
             ShuttleAPITestClient().http_delete("/status/404")
         self.assertEqual(404, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/404", cm.exception.source, "Sets the error source")
 
     def test_delete_499_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.HTTPClientError) as cm:
             ShuttleAPITestClient().http_delete("/status/499")
         self.assertEqual(499, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/499", cm.exception.source, "Sets the error source")
 
     def test_delete_500_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.InternalServerError) as cm:
             ShuttleAPITestClient().http_delete("/status/500")
         self.assertEqual(500, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/500", cm.exception.source, "Sets the error source")
 
     def test_delete_599_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.HTTPServerError) as cm:
             ShuttleAPITestClient().http_delete("/status/599")
         self.assertEqual(599, cm.exception.internal_status_code, "Returns the error status code")
+        self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
+        self.assertEqual("/status/599", cm.exception.source, "Sets the error source")

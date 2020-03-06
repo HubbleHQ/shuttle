@@ -14,6 +14,11 @@ class RequestsShuttleTransport:
         self.query = kwargs["query"]
         self.request_content_type = kwargs["request_content_type"]
 
+        if "service_name" in kwargs:
+            self.service_name = kwargs["service_name"]
+        else:
+            self.service_name = type(self).__name__
+
     def get(self, url, **kwargs):
         return self.__http_request("get", url, **kwargs)
 
@@ -41,7 +46,7 @@ class RequestsShuttleTransport:
 
             return self.__parse_response(response)
         except RequestException as error:
-            raise APIError(type(self).__name__, url, error)
+            raise APIError(self.service_name, url, error)
 
     def __prepare_request_url(self, url):
         return urljoin(
@@ -92,7 +97,7 @@ class RequestsShuttleTransport:
             response.raise_for_status()
         except RequestsHTTPError as error:
             error_class = self.__map_http_error_class(error)
-            raise error_class(type(self).__name__, url, error, self.__parse_response(response))
+            raise error_class(self.service_name, url, error, self.__parse_response(response))
 
     def __map_http_error_class(self, error):
         if error.response.status_code in HTTP_STATUS_CODE_ERRORS:

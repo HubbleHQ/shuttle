@@ -24,7 +24,8 @@ class ShuttleAPI:
             api_endpoint = self.api_endpoint,
             headers = self.headers,
             query = self.query,
-            request_content_type = self.request_content_type
+            request_content_type = self.request_content_type,
+            service_name = type(self).__name__,
         )
 
     def http_get(self, url, **kwargs):
