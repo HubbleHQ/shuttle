@@ -1,6 +1,6 @@
 # Hubble Shuttle 🚀
 
-![CircleCI build status](https://circleci.com/gh/HubbleHQ/shuttle.svg?style=svg&circle-token=db1939f52993f462688a0a10ffa554b41ef1211b)
+[![CircleCI build status](https://circleci.com/gh/HubbleHQ/shuttle.svg?style=svg&circle-token=db1939f52993f462688a0a10ffa554b41ef1211b)](https://circleci.com/gh/HubbleHQ/shuttle)
 
 > Note: This project is pre-1.0 release. We are still working on integrating it in production
 > systems here at HubbleHQ, and as a result, the API is not stable and might change before
