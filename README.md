@@ -33,9 +33,6 @@ on content encoding, and handles HTTP and networking errors.
 
 ## Installation
 
-> Note: At the time of writing, this package is not registered on PIP.
-> It will be made available in the future.
-
 ```
 pip install hubble_shuttle
 ```
