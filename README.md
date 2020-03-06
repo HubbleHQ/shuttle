@@ -193,3 +193,12 @@ make dev-build
 make dev-test
 ```
 
+### Releasing
+
+When Shuttle is ready for a new release, the steps to follow to publish the new version of the package are:
+* Increase the version number in setup.py. We aim to use semantic versioning as closely as possible.
+* Tag the commit you are packaging Shuttle from in Git, with the following format: `release-VERSION`.
+* Push the tags to Github.
+* Run `make dev-package` to create the distribution artifacts.
+* Upload the distribution artifacts to pip.
+
