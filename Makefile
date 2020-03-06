@@ -14,6 +14,10 @@ dev-test: ## Run the tests.
 		docker-compose run --rm "hubble-shuttle-$$PYTHON_VERSION" python -m unittest discover ; \
 	done
 
+.PHONY: dev-package
+dev-package: ## Package the application for upload to pip
+	docker-compose run --rm "hubble-shuttle-3.8" python setup.py sdist bdist_wheel
+
 .PHONY: help
 help: ## This message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

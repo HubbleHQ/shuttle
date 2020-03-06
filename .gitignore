@@ -1,3 +1,6 @@
 
 *.pyc
+build/
+dist/
+hubble_shuttle.egg-info/
 
