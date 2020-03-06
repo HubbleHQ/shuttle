@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="hubble_shuttle",
-    version="0.1",
+    version="0.1.1",
     author="HubbleHQ",
     author_email="dev@hubblehq.com",
     description="Hubble's Shuttle",
