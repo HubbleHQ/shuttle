@@ -2,6 +2,11 @@
 
 ![CircleCI build status](https://circleci.com/gh/HubbleHQ/shuttle.svg?style=svg&circle-token=db1939f52993f462688a0a10ffa554b41ef1211b)
 
+> Note: This project is pre-1.0 release. We are still working on integrating it in production
+> systems here at HubbleHQ, and as a result, the API is not stable and might change before
+> 1.0 release. This also means that not all HTTP features are currently supported (for example,
+> cookies), but we are actively adding support for these.
+
 Hubble Shuttle is an abstraction layer that makes it easy to write REST API clients.
 
 It enbraces convention over configuration, and abstracts a lot of common patterns to simplify
