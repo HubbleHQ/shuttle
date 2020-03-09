@@ -1,5 +1,3 @@
-import requests
-from requests.exceptions import RequestException
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 

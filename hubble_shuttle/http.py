@@ -10,6 +10,10 @@ class RequestsShuttleTransport:
 
     def __init__(self, **kwargs):
         self.api_endpoint = kwargs["api_endpoint"]
+        if not self.api_endpoint.endswith('/'):
+            self.api_endpoint += '/'
+
+
         self.headers = kwargs["headers"]
         self.query = kwargs["query"]
         self.request_content_type = kwargs["request_content_type"]
@@ -20,48 +24,51 @@ class RequestsShuttleTransport:
             self.service_name = type(self).__name__
 
     def get(self, url, **kwargs):
-        return self.__http_request("get", url, **kwargs)
+        return self._http_request("get", url, **kwargs)
 
     def post(self, url, **kwargs):
-        return self.__http_request("post", url, **kwargs)
+        return self._http_request("post", url, **kwargs)
 
     def put(self, url, **kwargs):
-        return self.__http_request("put", url, **kwargs)
+        return self._http_request("put", url, **kwargs)
 
     def patch(self, url, **kwargs):
-        return self.__http_request("patch", url, **kwargs)
+        return self._http_request("patch", url, **kwargs)
 
     def delete(self, url, **kwargs):
-        return self.__http_request("delete", url, **kwargs)
+        return self._http_request("delete", url, **kwargs)
 
-    def __http_request(self, method, url, **kwargs):
+    def _http_request(self, method, url, **kwargs):
         try:
             response = requests.request(
                 method,
-                self.__prepare_request_url(url),
-                **self.__prepare_request_args(**kwargs),
+                self._prepare_request_url(url),
+                **self._prepare_request_args(**kwargs),
             )
 
-            self.__raise_for_status(url, response)
+            self._raise_for_status(url, response)
 
-            return self.__parse_response(response)
+            return self._parse_response(response)
         except RequestException as error:
             raise APIError(self.service_name, url, error)
 
-    def __prepare_request_url(self, url):
+    def _prepare_request_url(self, url):
+        while url.startswith('/'):
+            url = url[1:]
+
         return urljoin(
             self.api_endpoint,
             url
         )
 
-    def __prepare_request_args(self, **kwargs):
+    def _prepare_request_args(self, **kwargs):
         request_args = {}
 
-        request_headers = self.__prepare_request_headers(kwargs.get("headers", {}))
+        request_headers = self._prepare_request_headers(kwargs.get("headers", {}))
         if request_headers:
             request_args.update({"headers": request_headers})
 
-        request_query = self.__prepare_request_query(kwargs.get("query", {}))
+        request_query = self._prepare_request_query(kwargs.get("query", {}))
         if request_query:
             request_args.update({"params": request_query})
 
@@ -76,7 +83,7 @@ class RequestsShuttleTransport:
 
         return request_args
 
-    def __prepare_request_headers(self, headers):
+    def _prepare_request_headers(self, headers):
         request_headers = {}
         if self.headers:
             request_headers.update(self.headers)
@@ -84,7 +91,7 @@ class RequestsShuttleTransport:
             request_headers.update(headers)
         return request_headers
 
-    def __prepare_request_query(self, query):
+    def _prepare_request_query(self, query):
         request_query = {}
         if self.query:
             request_query.update(self.query)
@@ -92,14 +99,14 @@ class RequestsShuttleTransport:
             request_query.update(query)
         return request_query
 
-    def __raise_for_status(self, url, response):
+    def _raise_for_status(self, url, response):
         try:
             response.raise_for_status()
         except RequestsHTTPError as error:
-            error_class = self.__map_http_error_class(error)
-            raise error_class(self.service_name, url, error, self.__parse_response(response))
+            error_class = self._map_http_error_class(error)
+            raise error_class(self.service_name, url, error, self._parse_response(response))
 
-    def __map_http_error_class(self, error):
+    def _map_http_error_class(self, error):
         if error.response.status_code in HTTP_STATUS_CODE_ERRORS:
             return HTTP_STATUS_CODE_ERRORS[error.response.status_code]
 
@@ -109,7 +116,7 @@ class RequestsShuttleTransport:
 
         return HTTPError
 
-    def __parse_response(self, response):
+    def _parse_response(self, response):
         content_type = response.headers.get('Content-Type', '')
         if re.match(r"^application/json( ?;.+)?$", content_type):
             data = response.json()
