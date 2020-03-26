@@ -129,6 +129,14 @@ class ShuttleAPITest(TestCase):
         self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
         self.assertEqual("/status/599", cm.exception.source, "Sets the error source")
 
+    def test_get_with_request_data(self):
+        with self.assertRaises(TypeError):
+            ShuttleAPITestClient().http_get("/get", data={"foo": "bar"})
+
+    def test_get_unknown_kwarg(self):
+        with self.assertRaises(TypeError):
+            ShuttleAPITestClient().http_get("/get", foo="bar")
+
     def test_post_request(self):
         response = ShuttleAPITestClient().http_post("/post")
         self.assertEqual('http://test_http_server/post', response.data['url'], "Parses the JSON response")
@@ -254,6 +262,10 @@ class ShuttleAPITest(TestCase):
         self.assertEqual(599, cm.exception.internal_status_code, "Returns the error status code")
         self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
         self.assertEqual("/status/599", cm.exception.source, "Sets the error source")
+
+    def test_post_unknown_kwarg(self):
+        with self.assertRaises(TypeError):
+            ShuttleAPITestClient().http_post("/post", foo="bar")
 
     def test_put_request(self):
         response = ShuttleAPITestClient().http_put("/put")
@@ -381,6 +393,10 @@ class ShuttleAPITest(TestCase):
         self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
         self.assertEqual("/status/599", cm.exception.source, "Sets the error source")
 
+    def test_put_unknown_kwarg(self):
+        with self.assertRaises(TypeError):
+            ShuttleAPITestClient().http_put("/put", foo="bar")
+
     def test_patch_request(self):
         response = ShuttleAPITestClient().http_patch("/patch")
         self.assertEqual('http://test_http_server/patch', response.data['url'], "Parses the JSON response")
@@ -507,6 +523,10 @@ class ShuttleAPITest(TestCase):
         self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
         self.assertEqual("/status/599", cm.exception.source, "Sets the error source")
 
+    def test_patch_unknown_kwarg(self):
+        with self.assertRaises(TypeError):
+            ShuttleAPITestClient().http_patch("/patch", foo="bar")
+
     def test_delete_request(self):
         response = ShuttleAPITestClient().http_delete("/delete")
         self.assertEqual('http://test_http_server/delete', response.data['url'], "Parses the JSON response")
@@ -601,3 +621,12 @@ class ShuttleAPITest(TestCase):
         self.assertEqual(599, cm.exception.internal_status_code, "Returns the error status code")
         self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
         self.assertEqual("/status/599", cm.exception.source, "Sets the error source")
+
+    def test_delete_with_request_data(self):
+        with self.assertRaises(TypeError):
+            ShuttleAPITestClient().http_delete("/delete", data={"foo": "bar"})
+
+    def test_delete_unknown_kwarg(self):
+        with self.assertRaises(TypeError):
+            ShuttleAPITestClient().http_delete("/delete", foo="bar")
+
