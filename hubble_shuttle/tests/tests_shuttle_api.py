@@ -11,6 +11,19 @@ class ShuttleAPITestClient(ShuttleAPI):
 
 class ShuttleAPITest(TestCase):
 
+    def test_response_headers(self):
+        response = ShuttleAPITestClient().http_get("/response-headers", query={"Test-Header": "test-value"})
+        self.assertEqual("test-value", response.headers["Test-Header"], "Returns the expected header value")
+        self.assertEqual("test-value", response.headers.get("Test-Header"), "Behaves like a dict")
+
+    def test_response_headers_are_read_only(self):
+        response = ShuttleAPITestClient().http_get("/response-headers", query={"Test-Header": "test-value"})
+
+        with self.assertRaises(TypeError) as cm:
+            response.headers["Test-Header"] = "another-value"
+
+        self.assertEqual("test-value", response.headers["Test-Header"], "Doesn't change the values after an attempted write")
+
     def test_get_request(self):
         response = ShuttleAPITestClient().http_get("/get")
         self.assertEqual('http://test_http_server/get', response.data['url'], "Parses the JSON response")
