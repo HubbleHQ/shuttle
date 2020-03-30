@@ -27,20 +27,20 @@ class RequestsShuttleTransport:
         else:
             self.service_name = type(self).__name__
 
-    def get(self, url, **kwargs):
-        return self._http_request("get", url, **kwargs)
+    def get(self, url, query=None, headers=None):
+        return self._http_request("get", url, query=query, headers=headers)
 
-    def post(self, url, **kwargs):
-        return self._http_request("post", url, **kwargs)
+    def post(self, url, query=None, headers=None, data=None, content_type=None):
+        return self._http_request("post", url, query=query, headers=headers, data=data, content_type=content_type)
 
-    def put(self, url, **kwargs):
-        return self._http_request("put", url, **kwargs)
+    def put(self, url, query=None, headers=None, data=None, content_type=None):
+        return self._http_request("put", url, query=query, headers=headers, data=data, content_type=content_type)
 
-    def patch(self, url, **kwargs):
-        return self._http_request("patch", url, **kwargs)
+    def patch(self, url, query=None, headers=None, data=None, content_type=None):
+        return self._http_request("patch", url, query=query, headers=headers, data=data, content_type=content_type)
 
-    def delete(self, url, **kwargs):
-        return self._http_request("delete", url, **kwargs)
+    def delete(self, url, query=None, headers=None):
+        return self._http_request("delete", url, query=query, headers=headers)
 
     def _http_request(self, method, url, **kwargs):
         try:
@@ -77,7 +77,7 @@ class RequestsShuttleTransport:
             request_args.update({"params": request_query})
 
         if "data" in kwargs:
-            content_type = kwargs.get("content_type", self.request_content_type)
+            content_type = kwargs.get("content_type") or self.request_content_type
             if content_type == "application/x-www-form-urlencoded":
                 request_args.update({"data": kwargs["data"]})
             elif content_type == "application/json":
