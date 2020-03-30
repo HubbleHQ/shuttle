@@ -24,7 +24,7 @@ class ShuttleAPIExceptionsTest(TestCase):
 
     def test_create_from_http_error(self):
         error_response = MagicMock()
-        response = ShuttleResponse({"some_key": "some_value"}, 410)
+        response = ShuttleResponse({"some_key": "some_value"}, 410, {})
 
         http_error = requests.exceptions.HTTPError(response=error_response)
 

@@ -1,7 +1,11 @@
 import re
+
 import requests
 from requests.exceptions import RequestException
 from requests.exceptions import HTTPError as RequestsHTTPError
+
+import collections
+
 from urllib.parse import urljoin
 
 from .exceptions import *
@@ -125,11 +129,28 @@ class RequestsShuttleTransport:
         else:
             data = response.content
 
-        return ShuttleResponse(data, response.status_code)
+        return ShuttleResponse(data, response.status_code, response.headers)
 
 class ShuttleResponse:
 
-    def __init__(self, data, status_code):
+    def __init__(self, data, status_code, headers):
         self.data = data
         self.status_code = status_code
+        self.headers = ShuttleHeaders(headers)
 
+class ShuttleHeaders(collections.Mapping):
+    """
+    Read-only wrapper for returning headers in a ShuttleResponse.
+    """
+
+    def __init__(self, data):
+        self._data = data
+
+    def __getitem__(self, key):
+        return self._data[key]
+
+    def __len__(self):
+        return len(self._data)
+
+    def __iter__(self):
+        return iter(self._data)
