@@ -29,6 +29,10 @@ class BadRequestError(HTTPClientError):
 class NotFoundError(HTTPClientError):
     pass
 
+# For 409 HTTP errors
+class ConflictError(HTTPClientError):
+    pass
+
 # For 500 HTTP errors
 class InternalServerError(HTTPServerError):
     pass
@@ -41,6 +45,7 @@ HTTP_STATUS_CODE_CLASS_ERRORS = {
 HTTP_STATUS_CODE_ERRORS = {
     400: BadRequestError,
     404: NotFoundError,
+    409: ConflictError,
     500: InternalServerError,
 }
 
