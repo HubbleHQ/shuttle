@@ -1,24 +1,6 @@
 version: "3"
 
 services:
-  hubble-shuttle-3.5:
-    container_name: hubble-shuttle-3.5
-    build:
-      context: .
-      dockerfile: Dockerfile-3.5
-    volumes:
-      - .:/src
-    depends_on:
-      - test_http_server
-  hubble-shuttle-3.6:
-    container_name: hubble-shuttle-3.6
-    build:
-      context: .
-      dockerfile: Dockerfile-3.6
-    volumes:
-      - .:/src
-    depends_on:
-      - test_http_server
   hubble-shuttle-3.7:
     container_name: hubble-shuttle-3.7
     build:
@@ -33,6 +15,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-3.8
+    volumes:
+      - .:/src
+    depends_on:
+      - test_http_server
+  hubble-shuttle-3.9:
+    container_name: hubble-shuttle-3.9
+    build:
+      context: .
+      dockerfile: Dockerfile-3.9
     volumes:
       - .:/src
     depends_on:
