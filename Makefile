@@ -1,4 +1,4 @@
-export PYTHON_VERSIONS := 3.5 3.6 3.7 3.8
+export PYTHON_VERSIONS := 3.7 3.8 3.9
 
 .PHONY: dev-build
 dev-build: ## Create the docker image for you dev environment.
@@ -16,7 +16,7 @@ dev-test: ## Run the tests.
 
 .PHONY: dev-package
 dev-package: ## Package the application for upload to pip
-	docker-compose run --rm "hubble-shuttle-3.8" python setup.py sdist bdist_wheel
+	docker-compose run --rm "hubble-shuttle-3.9" python setup.py sdist bdist_wheel
 
 .PHONY: help
 help: ## This message
