@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="hubble_shuttle",
-    version="0.4.0",
+    version="0.5.0",
     author="HubbleHQ",
     author_email="dev@hubblehq.com",
     description="Hubble's Shuttle",
@@ -19,5 +19,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.8",
+    python_requires=">=3.9",
 )
