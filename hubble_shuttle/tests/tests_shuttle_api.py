@@ -107,6 +107,16 @@ class ShuttleAPITest(TestCase):
         self.assertEqual("ShuttleAPITestClient", cm.exception.service_name, "Sets the service name")
         self.assertEqual("/get", cm.exception.source, "Sets the error source")
 
+    def test_get_adds_locale_as_header(self):
+        client = ShuttleAPITestClient(locale="en-us")
+        response = client.http_get("/get")
+        self.assertEqual("en-us", response.data['headers']['Accept-Language'], "Adds the locale as a header")
+    
+    def test_get_does_not_add_accept_language_if_locale_unspecified(self):
+        client = ShuttleAPITestClient()
+        response = client.http_get("/get")
+        self.assertNotIn("Accept-Language", response.data['headers'], "Doesn't add the Accept-Language header if locale is not specified")
+        
     def test_get_400_http_error(self):
         with self.assertRaises(hubble_shuttle.exceptions.BadRequestError) as cm:
             ShuttleAPITestClient().http_get("/status/400")
@@ -241,6 +251,16 @@ class ShuttleAPITest(TestCase):
         response = client.http_post("/post", query={"foo": "baz"})
         self.assertEqual("baz", response.data['args']['foo'], "Sends the request-level parameters")
 
+    def test_post_adds_locale_as_header(self):
+        client = ShuttleAPITestClient(locale="en-us")
+        response = client.http_post("/post")
+        self.assertEqual("en-us", response.data['headers']['Accept-Language'], "Adds the locale as a header")
+    
+    def test_post_does_not_add_accept_language_if_locale_unspecified(self):
+        client = ShuttleAPITestClient()
+        response = client.http_post("/post")
+        self.assertNotIn("Accept-Language", response.data['headers'], "Doesn't add the Accept-Language header if locale is not specified")
+
     def test_post_generic_networking_error(self):
         client = ShuttleAPITestClient(api_endpoint='http://test_http_server:1234')
         with self.assertRaises(hubble_shuttle.exceptions.APIError) as cm:
@@ -370,6 +390,16 @@ class ShuttleAPITest(TestCase):
         client = ShuttleAPITestClient(query={"foo": "bar"})
         response = client.http_put("/put", query={"foo": "baz"})
         self.assertEqual("baz", response.data['args']['foo'], "Sends the request-level parameters")
+
+    def test_put_adds_locale_as_header(self):
+        client = ShuttleAPITestClient(locale="en-us")
+        response = client.http_put("/put")
+        self.assertEqual("en-us", response.data['headers']['Accept-Language'], "Adds the locale as a header")
+    
+    def test_put_does_not_add_accept_language_if_locale_unspecified(self):
+        client = ShuttleAPITestClient()
+        response = client.http_put("/put")
+        self.assertNotIn("Accept-Language", response.data['headers'], "Doesn't add the Accept-Language header if locale is not specified")
 
     def test_put_generic_networking_error(self):
         client = ShuttleAPITestClient(api_endpoint='http://test_http_server:1234')
@@ -501,6 +531,16 @@ class ShuttleAPITest(TestCase):
         response = client.http_patch("/patch", query={"foo": "baz"})
         self.assertEqual("baz", response.data['args']['foo'], "Sends the request-level parameters")
 
+    def test_patch_adds_locale_as_header(self):
+        client = ShuttleAPITestClient(locale="en-us")
+        response = client.http_patch("/patch")
+        self.assertEqual("en-us", response.data['headers']['Accept-Language'], "Adds the locale as a header")
+    
+    def test_patch_does_not_add_accept_language_if_locale_unspecified(self):
+        client = ShuttleAPITestClient()
+        response = client.http_patch("/patch")
+        self.assertNotIn("Accept-Language", response.data['headers'], "Doesn't add the Accept-Language header if locale is not specified")
+
     def test_patch_generic_networking_error(self):
         client = ShuttleAPITestClient(api_endpoint='http://test_http_server:1234')
         with self.assertRaises(hubble_shuttle.exceptions.APIError) as cm:
@@ -599,6 +639,16 @@ class ShuttleAPITest(TestCase):
         client = ShuttleAPITestClient(query={"foo": "bar"})
         response = client.http_delete("/delete", query={"foo": "baz"})
         self.assertEqual("baz", response.data['args']['foo'], "Sends the request-level parameters")
+
+    def test_delete_adds_locale_as_header(self):
+        client = ShuttleAPITestClient(locale="en-us")
+        response = client.http_delete("/delete")
+        self.assertEqual("en-us", response.data['headers']['Accept-Language'], "Adds the locale as a header")
+    
+    def test_delete_does_not_add_accept_language_if_locale_unspecified(self):
+        client = ShuttleAPITestClient()
+        response = client.http_delete("/delete")
+        self.assertNotIn("Accept-Language", response.data['headers'], "Doesn't add the Accept-Language header if locale is not specified")
 
     def test_delete_generic_networking_error(self):
         client = ShuttleAPITestClient(api_endpoint='http://test_http_server:1234')

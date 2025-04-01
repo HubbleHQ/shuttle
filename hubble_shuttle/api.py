@@ -9,6 +9,7 @@ class ShuttleAPI:
     headers = {}
     query = {}
     request_content_type = "application/x-www-form-urlencoded"
+    locale = None
 
     def __init__(self, **kwargs):
         if "api_endpoint" in kwargs:
@@ -19,10 +20,19 @@ class ShuttleAPI:
             self.query = kwargs["query"]
         if "request_content_type" in kwargs:
             self.request_content_type = kwargs["request_content_type"]
+        if "locale" in kwargs:
+            self.locale = kwargs["locale"]
+
+        # Create a copy of the headers to avoid modifying the original
+        headers = {
+            **self.headers,
+        }
+        if self.locale is not None:
+            headers["Accept-Language"] = self.locale
 
         self.http = self.transport(
             api_endpoint = self.api_endpoint,
-            headers = self.headers,
+            headers = headers,
             query = self.query,
             request_content_type = self.request_content_type,
             service_name = type(self).__name__,
