@@ -1,4 +1,7 @@
-FROM python:3.8-alpine
+FROM python:3.8-alpine as base
+
+RUN mkdir /src
+WORKDIR /src
 
 # Configure OS to use the Yardi VPN certificate
 COPY build-scripts/ca-certs ./build-scripts/ca-certs
@@ -13,9 +16,29 @@ ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
 # Necessary for Python's `requests` library to use custom CA certs
 ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
-RUN mkdir /src
-WORKDIR /src
-COPY . .
+FROM base AS deps
 
+RUN apk add --no-cache \
+    build-base \
+    libffi-dev
+
+COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
 
+FROM deps AS deps-dev
+
+# Required for build and deployment
+RUN pip install --upgrade build
+RUN pip install --upgrade twine
+COPY . .
+
+FROM deps-dev AS dev
+COPY . .
+
+FROM deps-dev as release
+COPY . .
+
+# Set the default target. This way, if we run `docker build` without specifying
+# a target, it will build the dev image. NOTE: this _must_ be the last
+# line in the file.
+FROM dev

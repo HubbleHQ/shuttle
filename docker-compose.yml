@@ -6,9 +6,26 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-3.9
+      target: dev
+    profiles:
+      - dev
     volumes:
       - .:/src
     depends_on:
       - test_http_server
+
   test_http_server:
     image: kennethreitz/httpbin
+
+  release:
+    build:
+      context: .
+      dockerfile: Dockerfile-3.9
+      target: release
+    profiles:
+      - release
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/src
+      - /src/venv

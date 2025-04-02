@@ -18,9 +18,19 @@ dev-test: ## Run the tests.
 		docker-compose run --rm "hubble-shuttle-$$PYTHON_VERSION" python -m unittest discover ; \
 	done
 
-.PHONY: dev-package
-dev-package: ## Package the application for upload to pip
-	docker-compose run --rm "hubble-shuttle-3.9" python setup.py sdist bdist_wheel
+.PHONY: build
+build: # Build the dist package
+	rm -rf /dist && docker compose --profile release run --rm release python -m build
+
+.PHONY: deploy
+deploy: # Deploy dist package to testpypi
+	make build
+	docker compose --profile release run release python -m twine upload --verbose dist/*
+
+.PHONY: test-deploy
+test-deploy: # Deploy dist package to testpypi
+	make build
+	docker compose --profile release run release python -m twine upload --verbose --repository testpypi dist/*
 
 .PHONY: help
 help: ## This message
