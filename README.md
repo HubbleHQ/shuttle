@@ -95,6 +95,19 @@ class ConflictingHeaderAPI(ShuttleAPI):
 
 ```
 
+### Adding locale information
+
+Some requests need to be localised. Shuttle supports this in its constructor using a `locale`
+kwarg, which is passed on as the `Accept-Language` header.
+
+```python
+class MyClientApi(ShuttleApi):
+    # ...
+    pass
+
+api = MyClientApi(locale="en-us")
+```
+
 ### Sending a request body
 
 When making a POST, PUT, or PATCH request, it is possible to embed a request body. The request
