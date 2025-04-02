@@ -1,5 +1,18 @@
 FROM python:3.8-alpine
 
+# Configure OS to use the Yardi VPN certificate
+COPY build-scripts/ca-certs ./build-scripts/ca-certs
+RUN ./build-scripts/ca-certs/import-certs
+
+# Common env var used for CA certs
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+
+# Necessary for VS Code extensions in dev containers
+ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+
+# Necessary for Python's `requests` library to use custom CA certs
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
 RUN mkdir /src
 WORKDIR /src
 COPY . .

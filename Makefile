@@ -8,6 +8,10 @@ dev-build: ## Create the docker image for you dev environment.
 dev-clean: ## Remove all the docker containers for this project.
 	docker-compose down --rmi local --volumes
 
+.PHONY: dev-setup ## Basic environment configuration
+dev-setup:
+	build-scripts/ca-certs/export-certs
+
 .PHONY: dev-test
 dev-test: ## Run the tests.
 	for PYTHON_VERSION in ${PYTHON_VERSIONS} ; do \
