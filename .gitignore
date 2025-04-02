@@ -3,4 +3,7 @@
 build/
 dist/
 hubble_shuttle.egg-info/
+.DS_Store
 
+# Root certificate chain exports
+build-scripts/ca-certs/*.pem

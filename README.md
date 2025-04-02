@@ -203,13 +203,14 @@ make dev-build
 make dev-test
 ```
 
-### Releasing
+### Deploying to PyPi
 
-When Shuttle is ready for a new release, the steps to follow to publish the new version of the package are:
-* Merge all pull requests that need to be part of the release, and switch to the `main` branch. All releases should be made against `main`.
-* Increase the version number in setup.py. We aim to use semantic versioning as closely as possible.
-* Tag the commit you are packaging Shuttle from in Git, with the following format: `release-VERSION`.
-* Push the tags to Github.
-* Run `make dev-package` to create the distribution artifacts.
-* Upload the distribution artifacts to pip.
-
+1. Ensure you're listed as a contributing member for the package in Pypi and if you want to do a test deploy in test PyPi as well. They use separate users, so you may need to sign up again. We don't seem to use organisations in PyPi so you need adding to the project directly.
+2. Update the version number in `pyproject.toml` use semantic version as it makes sense, e.g. minor version changes for minor updates
+3. Run `make build` to get a build - you don't need to anything with this version but look in the `dist/` directory to make sure the version and name all look correct.
+4. Run `make test-deploy` this will build and attempt an upload to the test PyPi
+ 1. Before being uploaded it will ask you to enter a token.
+ 2. To generate a token go to https://test.pypi.org/, login -> account settings -> scroll down -> api tokens -> generate a new one with access to the project. If you don't see the project then go back to point 1.
+ 3. Copy the token into the prompt from `make test-deploy`
+ 4. Check test pypi has the updated version.
+5. Run `make deploy` for a production release and follow the same steps as the test but on the proper PyPi.
