@@ -1,6 +1,6 @@
 [project]
 name = "hubble_shuttle"
-version =" 0.6.1"
+version =" 0.6.2"
 authors = [
     { name="Hubble", email="dev@hubblehq.com" }
 ]

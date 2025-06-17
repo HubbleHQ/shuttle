@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   hubble-shuttle-3.9:
     container_name: hubble-shuttle-3.9
