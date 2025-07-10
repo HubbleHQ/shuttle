@@ -1,4 +1,4 @@
-export PYTHON_VERSIONS := 3.9
+export PYTHON_VERSIONS := 3.9 3.13
 
 .PHONY: dev-build
 dev-build: ## Create the docker image for you dev environment.
