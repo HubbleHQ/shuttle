@@ -12,13 +12,26 @@ services:
     depends_on:
       - test_http_server
 
+  hubble-shuttle-3.13:
+    container_name: hubble-shuttle-3.13
+    build:
+      context: .
+      dockerfile: Dockerfile-3.13
+      target: dev
+    profiles:
+      - dev
+    volumes:
+      - .:/src
+    depends_on:
+      - test_http_server
+
   test_http_server:
     image: kennethreitz/httpbin
 
   release:
     build:
       context: .
-      dockerfile: Dockerfile-3.9
+      dockerfile: Dockerfile-3.13
       target: release
     profiles:
       - release
