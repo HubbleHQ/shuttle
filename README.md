@@ -39,7 +39,7 @@ pip install hubble_shuttle
 
 ### Supported Python versions
 
-Shuttle is build and tested with Python 3.9.
+Shuttle is build and tested with Python 3.13.
 
 ## Client-level configuration
 

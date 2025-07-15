@@ -4,7 +4,7 @@ import requests
 from requests.exceptions import RequestException
 from requests.exceptions import HTTPError as RequestsHTTPError
 
-import collections
+from collections.abc import Mapping
 
 from urllib.parse import urljoin
 
@@ -138,7 +138,7 @@ class ShuttleResponse:
         self.status_code = status_code
         self.headers = ShuttleHeaders(headers)
 
-class ShuttleHeaders(collections.Mapping):
+class ShuttleHeaders(Mapping):
     """
     Read-only wrapper for returning headers in a ShuttleResponse.
     """
