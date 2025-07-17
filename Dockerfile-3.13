@@ -16,6 +16,8 @@ ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
 # Necessary for Python's `requests` library to use custom CA certs
 ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
+ENV TWINE_CERT=/etc/ssl/certs/ca-certificates.crt
+
 FROM base AS deps
 
 RUN apk add --no-cache \

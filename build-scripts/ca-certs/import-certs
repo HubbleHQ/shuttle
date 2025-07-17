@@ -9,21 +9,23 @@ set -e
 
 import_path=build-scripts/ca-certs/certs.pem
 
-if ! test -f $import_path; then
-  echo "No certificates to import, skipping..."
-  exit 0
+if ! test -f $import_path
+then
+    echo "No certificates to import, skipping..."
+    exit 0
 fi
 
-if ! command -v update-ca-certificates 2>&1 >/dev/null; then
-  # We need to install the ca-certificates package.
-  #
-  # First, we need to temporarily add our certificate chain somewhere that apk can
-  # access it.
-  cat $import_path >>/etc/ssl/certs/ca-certificates.crt
-  # Now, install ca-certificates
-  apk --no-cache add ca-certificates
+if ! command -v update-ca-certificates 2>&1 >/dev/null
+then
+    # We need to install the ca-certificates package.
+    #
+    # First, we need to temporarily add our certificate chain somewhere that apk can
+    # access it.
+    cat $import_path >> /etc/ssl/certs/ca-certificates.crt
+    # Now, install ca-certificates
+    apk --no-cache add ca-certificates
 fi
 
 # Add our exported certificates into the system certificate store
-cp ${import_path} /usr/local/share/ca-certificates/certs.crt # Need to use .crt, because Cypress is Debian-based
+cp ${import_path} /usr/local/share/ca-certificates/
 update-ca-certificates
