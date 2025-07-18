@@ -2,11 +2,11 @@ export PYTHON_VERSIONS := 3.12
 
 .PHONY: dev-build
 dev-build: ## Create the docker image for you dev environment.
-	docker-compose build
+	docker compose --profile "*" build
 
 .PHONY: dev-clean
 dev-clean: ## Remove all the docker containers for this project.
-	docker-compose down --rmi local --volumes
+	docker compose --profile "*" down --rmi local --volumes
 
 .PHONY: dev-setup ## Basic environment configuration
 dev-setup:
@@ -15,7 +15,7 @@ dev-setup:
 .PHONY: dev-test
 dev-test: ## Run the tests.
 	for PYTHON_VERSION in ${PYTHON_VERSIONS} ; do \
-		docker-compose run --rm "hubble-shuttle-$$PYTHON_VERSION" python -m unittest discover ; \
+		docker compose run --rm "hubble-shuttle-$$PYTHON_VERSION" python -m unittest discover ; \
 	done
 
 .PHONY: build
