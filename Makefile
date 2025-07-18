@@ -12,6 +12,10 @@ dev-clean: ## Remove all the docker containers for this project.
 dev-setup:
 	build-scripts/ca-certs/export-certs
 
+.PHONY: dev-shell
+dev-shell: ## Start a shell in the dev container
+	docker compose run release sh
+
 .PHONY: dev-test
 dev-test: ## Run the tests.
 	for PYTHON_VERSION in ${PYTHON_VERSIONS} ; do \
