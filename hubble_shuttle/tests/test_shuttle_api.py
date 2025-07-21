@@ -1,5 +1,4 @@
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
 
 import hubble_shuttle
 from hubble_shuttle import ShuttleAPI

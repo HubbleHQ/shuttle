@@ -1,7 +1,5 @@
-import requests
 
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
 
 from hubble_shuttle.http import RequestsShuttleTransport, ShuttleHeaders
 
