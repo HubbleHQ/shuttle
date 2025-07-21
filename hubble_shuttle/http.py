@@ -4,19 +4,19 @@ import requests
 from requests.exceptions import RequestException
 from requests.exceptions import HTTPError as RequestsHTTPError
 
-import collections
+from collections import Mapping
 
 from urllib.parse import urljoin
 
 from .exceptions import *
 
+
 class RequestsShuttleTransport:
 
     def __init__(self, **kwargs):
         self.api_endpoint = kwargs["api_endpoint"]
-        if not self.api_endpoint.endswith('/'):
-            self.api_endpoint += '/'
-
+        if not self.api_endpoint.endswith("/"):
+            self.api_endpoint += "/"
 
         self.headers = kwargs["headers"]
         self.query = kwargs["query"]
@@ -31,13 +31,34 @@ class RequestsShuttleTransport:
         return self._http_request("get", url, query=query, headers=headers)
 
     def post(self, url, query=None, headers=None, data=None, content_type=None):
-        return self._http_request("post", url, query=query, headers=headers, data=data, content_type=content_type)
+        return self._http_request(
+            "post",
+            url,
+            query=query,
+            headers=headers,
+            data=data,
+            content_type=content_type,
+        )
 
     def put(self, url, query=None, headers=None, data=None, content_type=None):
-        return self._http_request("put", url, query=query, headers=headers, data=data, content_type=content_type)
+        return self._http_request(
+            "put",
+            url,
+            query=query,
+            headers=headers,
+            data=data,
+            content_type=content_type,
+        )
 
     def patch(self, url, query=None, headers=None, data=None, content_type=None):
-        return self._http_request("patch", url, query=query, headers=headers, data=data, content_type=content_type)
+        return self._http_request(
+            "patch",
+            url,
+            query=query,
+            headers=headers,
+            data=data,
+            content_type=content_type,
+        )
 
     def delete(self, url, query=None, headers=None):
         return self._http_request("delete", url, query=query, headers=headers)
@@ -57,13 +78,10 @@ class RequestsShuttleTransport:
             raise APIError(self.service_name, url, error)
 
     def _prepare_request_url(self, url):
-        while url.startswith('/'):
+        while url.startswith("/"):
             url = url[1:]
 
-        return urljoin(
-            self.api_endpoint,
-            url
-        )
+        return urljoin(self.api_endpoint, url)
 
     def _prepare_request_args(self, **kwargs):
         request_args = {}
@@ -83,7 +101,9 @@ class RequestsShuttleTransport:
             elif content_type == "application/json":
                 request_args.update({"json": kwargs["data"]})
             else:
-                raise ValueError("Unknown content type for request: {}".format(content_type))
+                raise ValueError(
+                    "Unknown content type for request: {}".format(content_type)
+                )
 
         return request_args
 
@@ -108,7 +128,9 @@ class RequestsShuttleTransport:
             response.raise_for_status()
         except RequestsHTTPError as error:
             error_class = self._map_http_error_class(error)
-            raise error_class(self.service_name, url, error, self._parse_response(response))
+            raise error_class(
+                self.service_name, url, error, self._parse_response(response)
+            )
 
     def _map_http_error_class(self, error):
         if error.response.status_code in HTTP_STATUS_CODE_ERRORS:
@@ -121,7 +143,7 @@ class RequestsShuttleTransport:
         return HTTPError
 
     def _parse_response(self, response):
-        content_type = response.headers.get('Content-Type', '')
+        content_type = response.headers.get("Content-Type", "")
         if re.match(r"^application/json( ?;.+)?$", content_type):
             data = response.json()
         elif re.match(r"^text/plain( ?;.+)?$", content_type):
@@ -131,6 +153,7 @@ class RequestsShuttleTransport:
 
         return ShuttleResponse(data, response.status_code, response.headers)
 
+
 class ShuttleResponse:
 
     def __init__(self, data, status_code, headers):
@@ -138,7 +161,8 @@ class ShuttleResponse:
         self.status_code = status_code
         self.headers = ShuttleHeaders(headers)
 
-class ShuttleHeaders(collections.Mapping):
+
+class ShuttleHeaders(Mapping):
     """
     Read-only wrapper for returning headers in a ShuttleResponse.
     """
