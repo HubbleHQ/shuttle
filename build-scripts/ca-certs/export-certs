@@ -13,7 +13,7 @@ if command -v security 2>&1 >/dev/null
 then
     # macOS: `security` command allows for exporting certs
     echo "Exporting macOS root certificate store to $export_path..."
-    security find-certificate -a -c ysi-YSIFWCERT01-CA -p > $export_path
+    security find-certificate -a -p > $export_path
 else
     echo "Exporting certificates is unsupported on this platform."
     exit 1

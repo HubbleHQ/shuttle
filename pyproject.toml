@@ -1,12 +1,12 @@
 [project]
 name = "hubble_shuttle"
-version =" 0.6.2"
+version =" 0.7.0"
 authors = [
     { name="Hubble", email="dev@hubblehq.com" }
 ]
 description = "Hubble's Shuttle"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.12"
 dependencies = [
   "requests>2.32.0",
 ]

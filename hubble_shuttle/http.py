@@ -4,7 +4,7 @@ import requests
 from requests.exceptions import RequestException
 from requests.exceptions import HTTPError as RequestsHTTPError
 
-from collections import Mapping
+from collections.abc import Mapping
 
 from urllib.parse import urljoin
 

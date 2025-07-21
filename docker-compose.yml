@@ -1,9 +1,9 @@
 services:
-  hubble-shuttle-3.9:
-    container_name: hubble-shuttle-3.9
+  hubble-shuttle-3.12:
+    container_name: hubble-shuttle-3.12
     build:
       context: .
-      dockerfile: Dockerfile-3.9
+      dockerfile: Dockerfile-3.12
       target: dev
     profiles:
       - dev
@@ -18,7 +18,7 @@ services:
   release:
     build:
       context: .
-      dockerfile: Dockerfile-3.9
+      dockerfile: Dockerfile-3.12
       target: release
     profiles:
       - release
