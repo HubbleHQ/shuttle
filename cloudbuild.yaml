@@ -5,10 +5,7 @@ steps:
     args:
       - -c
       - |
-        docker build \
-          --target release \
-          -t ${_DOCKER_TAG} \
-          -f Dockerfile-3.12 \
+        make dev-build
           .
   - id: 'Run tests'
     name: 'gcr.io/cloud-builders/docker'
@@ -16,11 +13,7 @@ steps:
     args:
       - -c
       - |
-        docker compose \
-        --profile release \
-        run \
-        --rm \
-        release python -m unittest discover
+        make dev-test
     waitFor: ['Build image']
 
 substitutions:
