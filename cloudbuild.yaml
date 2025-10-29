@@ -1,0 +1,33 @@
+steps:
+  - id: 'Build image'
+    name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'sh'
+    args:
+      - -c
+      - |
+        docker build \
+          --target release \
+          -t ${_DOCKER_TAG} \
+          .
+  - id: 'Run tests'
+    name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'sh'
+    args:
+      - -c
+      - |
+        docker compose \
+        --profile release \
+        run \
+        --rm \
+        release python -m unittest discover
+    waitFor: ['Build image']
+
+substitutions:
+  _SERVICE_NAME: shuttle
+  _BUILD_ID_SHORT: ${BUILD_ID:0:8}
+  _DOCKER_TAG: ${LOCATION}-docker.pkg.dev/${PROJECT_ID}/hubblehq-docker/${_SERVICE_NAME}
+
+options:
+  dynamicSubstitutions: true
+  machineType: 'E2_HIGHCPU_8'
+  logging: CLOUD_LOGGING_ONLY
